@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EF4DE3FC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.UnitTests", "tests\CrockeryFactory.UnitTests\CrockeryFactory.UnitTests.csproj", "{89951121-F6DE-46AB-B3E3-FA6EB412362A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.Application", "src\CrockeryFactory.Application\CrockeryFactory.Application.csproj", "{93F42D8A-A19C-4015-AF0D-ECB79DEE728F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.IntegrationTests", "tests\CrockeryFactory.IntegrationTests\CrockeryFactory.IntegrationTests.csproj", "{65A5DBD7-8DD6-44BE-906C-C1C6215DD057}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,11 +44,21 @@ Global
 		{89951121-F6DE-46AB-B3E3-FA6EB412362A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89951121-F6DE-46AB-B3E3-FA6EB412362A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89951121-F6DE-46AB-B3E3-FA6EB412362A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93F42D8A-A19C-4015-AF0D-ECB79DEE728F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93F42D8A-A19C-4015-AF0D-ECB79DEE728F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93F42D8A-A19C-4015-AF0D-ECB79DEE728F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93F42D8A-A19C-4015-AF0D-ECB79DEE728F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65A5DBD7-8DD6-44BE-906C-C1C6215DD057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65A5DBD7-8DD6-44BE-906C-C1C6215DD057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65A5DBD7-8DD6-44BE-906C-C1C6215DD057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65A5DBD7-8DD6-44BE-906C-C1C6215DD057}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8CA76C4A-2E6E-4301-B158-83862B028319} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
 		{0F06E39F-D78C-4523-B912-5187F733324D} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
 		{68C23487-860D-4F26-88D1-850FA60ECF94} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
 		{89951121-F6DE-46AB-B3E3-FA6EB412362A} = {EF4DE3FC-EB69-4CA2-85C6-220B9C6586F6}
+		{93F42D8A-A19C-4015-AF0D-ECB79DEE728F} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
+		{65A5DBD7-8DD6-44BE-906C-C1C6215DD057} = {EF4DE3FC-EB69-4CA2-85C6-220B9C6586F6}
 	EndGlobalSection
 EndGlobal

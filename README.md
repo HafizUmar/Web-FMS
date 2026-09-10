@@ -24,8 +24,10 @@ a price never rewrites a bill that has already gone out of the gate.
 |---|---|
 | `src/CrockeryFactory.Domain` | Enums, `Money`, `StockKey`, every entity, `ICurrentUser`, the Identity user and role |
 | `src/CrockeryFactory.Persistence` | `FactoryDbContext`, one `IEntityTypeConfiguration<T>` per entity, seeded reference data |
-| `src/CrockeryFactory.Web` | Host, and the single migration history under `Data/Migrations` |
-| `tests/CrockeryFactory.UnitTests` | Value-object behaviour and mapping guards |
+| `src/CrockeryFactory.Application` | Services, DTOs, validation and the business rules |
+| `src/CrockeryFactory.Web` | Controllers, authentication, error mapping, and the single migration history under `Data/Migrations` |
+| `tests/CrockeryFactory.UnitTests` | Value-object behaviour, mapping guards, session and policy rules |
+| `tests/CrockeryFactory.IntegrationTests` | The API against a real SQL Server |
 
 Modules are separated by namespace — `CrockeryFactory.Modules.Catalogue.*`,
 `.Stock.*`, `.Production.*`, `.Sales.*`, `CrockeryFactory.Shared.*` — and each module's
@@ -45,6 +47,19 @@ Requires the .NET 8 SDK and a reachable SQL Server.
 dotnet build
 dotnet test
 ```
+
+The integration tests need a SQL Server and are skipped without one:
+
+```bash
+export CROCKERY_TEST_CONNECTION="Server=localhost,1433;User Id=sa;Password=...;TrustServerCertificate=True"
+dotnet test
+```
+
+They run against a real SQL Server on purpose. The rules they exist to prove - the
+non-negative check constraint, the filtered unique index on current prices, and
+`rowversion` concurrency - are enforced by the database and do not exist on an in-memory
+provider. A suite that passed on a fake provider would be worse than no suite, because it
+would be believed.
 
 ### Database
 
@@ -111,8 +126,43 @@ Settings hold the answers that spec section 5 leaves open, so a different answer
 factory is a settings change rather than a deploy: enabled grades (BE-3), document number
 prefixes (BE-4) and the backdating windows (BE-5).
 
+## The API
+
+Base path `/api/v1`, JSON in camelCase, business dates as `yyyy-MM-dd` and timestamps in
+UTC. Errors are RFC 7807 `ProblemDetails` carrying a stable `code` the client switches on,
+a `traceId`, and per-field errors where they apply. A 500 never leaks exception detail -
+the full error is logged against the trace id instead.
+
+**Authentication** is a cookie: `HttpOnly`, `SameSite=Strict`, `Secure`, no token in the
+body. Owner and Administrator sessions slide by 30 minutes; a clerk's session ends at
+20:00 local, because the tablet is left on the packing bench. Deactivating a user ends
+their session on its next request rather than when the cookie happens to expire.
+
+**Authorisation** is by policy, never by a role name in an attribute, and a fallback
+policy means an endpoint added later without an attribute is closed rather than open.
+`PolicyMap` is the single definition of which roles satisfy which policy, so the
+permission list handed to the client cannot drift from what the server will actually
+allow.
+
+**Idempotency**: every POST that creates a document accepts an `Idempotency-Key`. A repeat
+within seven days replays the original response and marks it `Idempotency-Replayed: true`.
+A rejected request does not burn the key - the clerk fixes the field and retries from the
+same screen. This is not theoretical: a tablet on marginal factory WiFi will send a
+request, lose the reply, and send it again.
+
+**Concurrency**: single-record responses carry an `ETag` taken from `RowVersion`, and
+updates require `If-Match`. A stale version is `409 CONCURRENCY_CONFLICT`; a missing one is
+`428`, because "you never read this record" and "someone changed it since you read it" send
+the clerk to do different things. `If-Match: *` is refused rather than treated as agreement.
+
 ## Status
 
-Stage 1 of five is complete: solution, domain, EF mapping, and the `InitialCreate`
-migration, verified against SQL Server 2022. Authentication, the module services and the
-REST API follow in stages 2 to 5.
+Stages 1 and 2 of five are complete.
+
+- **Stage 1** - solution, domain, EF mapping, `InitialCreate` migration.
+- **Stage 2** - authentication and the authorisation matrix, RFC 7807 error mapping,
+  idempotency, ETag concurrency, the audit writer, document numbering, and the product
+  endpoints.
+
+Stock and production (3), sales (4), and reports, administration and the dev seeder (5)
+follow. 97 tests pass, the integration half of them against SQL Server 2022.

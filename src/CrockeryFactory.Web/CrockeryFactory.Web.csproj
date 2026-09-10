@@ -13,11 +13,13 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CrockeryFactory.Domain\CrockeryFactory.Domain.csproj" />
     <ProjectReference Include="..\CrockeryFactory.Persistence\CrockeryFactory.Persistence.csproj" />
+    <ProjectReference Include="..\CrockeryFactory.Application\CrockeryFactory.Application.csproj" />
   </ItemGroup>
 
 </Project>

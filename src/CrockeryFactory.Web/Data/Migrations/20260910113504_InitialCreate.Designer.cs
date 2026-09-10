@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrockeryFactory.Web.Data.Migrations
 {
     [DbContext(typeof(FactoryDbContext))]
-    [Migration("20260910112215_InitialCreate")]
+    [Migration("20260910113504_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -799,6 +799,18 @@ namespace CrockeryFactory.Web.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<string>("ResponseBody")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("int");
 
                     b.HasKey("Key");
 

@@ -99,6 +99,9 @@ namespace CrockeryFactory.Web.Data.Migrations
                     Key = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Endpoint = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     CreatedResourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StatusCode = table.Column<int>(type: "int", nullable: false),
+                    ResponseBody = table.Column<string>(type: "nvarchar(max)", maxLength: 256, nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

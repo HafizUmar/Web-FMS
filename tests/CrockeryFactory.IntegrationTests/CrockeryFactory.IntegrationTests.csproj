@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>CrockeryFactory.UnitTests</RootNamespace>
+    <RootNamespace>CrockeryFactory.IntegrationTests</RootNamespace>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -10,11 +10,10 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\CrockeryFactory.Domain\CrockeryFactory.Domain.csproj" />
-    <ProjectReference Include="..\..\src\CrockeryFactory.Persistence\CrockeryFactory.Persistence.csproj" />
     <ProjectReference Include="..\..\src\CrockeryFactory.Web\CrockeryFactory.Web.csproj" />
   </ItemGroup>
 

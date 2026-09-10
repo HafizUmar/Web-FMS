@@ -66,6 +66,8 @@ public class IdempotencyRecordConfiguration : IEntityTypeConfiguration<Idempoten
 
         b.Property(x => x.Key).HasMaxLength(64);
         b.Property(x => x.Endpoint).HasMaxLength(128).IsRequired();
+        b.Property(x => x.ResponseBody).HasColumnType("nvarchar(max)").IsRequired();
+        b.Property(x => x.Location).HasMaxLength(512);
 
         b.HasIndex(x => x.CreatedAt);   // for the 7-day cleanup job
     }
