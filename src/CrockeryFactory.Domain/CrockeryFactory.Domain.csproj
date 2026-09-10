@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>CrockeryFactory</RootNamespace>
+    <AssemblyName>CrockeryFactory.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Only for IdentityUser<Guid>/IdentityRole<Guid>. No EF Core reference here:
+         the domain must not know how it is persisted. -->
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+  </ItemGroup>
+
+</Project>

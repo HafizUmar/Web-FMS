@@ -1,0 +1,39 @@
+## .NET
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+*.user
+*.suo
+*.userprefs
+.vs/
+.vscode/
+.idea/
+
+## Build / test output
+[Tt]est[Rr]esult*/
+coverage*.json
+coverage*.xml
+*.trx
+BenchmarkDotNet.Artifacts/
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+## EF / local database
+*.mdf
+*.ldf
+upgrade.sql
+
+## Secrets - never commit a connection string with credentials
+appsettings.Development.local.json
+appsettings.*.local.json
+secrets.json
+
+## OS
+.DS_Store
+Thumbs.db

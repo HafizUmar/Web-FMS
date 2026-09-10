@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{36E884B2-0BD4-4480-A804-AEF355B2B5A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.Domain", "src\CrockeryFactory.Domain\CrockeryFactory.Domain.csproj", "{8CA76C4A-2E6E-4301-B158-83862B028319}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.Persistence", "src\CrockeryFactory.Persistence\CrockeryFactory.Persistence.csproj", "{0F06E39F-D78C-4523-B912-5187F733324D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.Web", "src\CrockeryFactory.Web\CrockeryFactory.Web.csproj", "{68C23487-860D-4F26-88D1-850FA60ECF94}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EF4DE3FC-EB69-4CA2-85C6-220B9C6586F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.UnitTests", "tests\CrockeryFactory.UnitTests\CrockeryFactory.UnitTests.csproj", "{89951121-F6DE-46AB-B3E3-FA6EB412362A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8CA76C4A-2E6E-4301-B158-83862B028319}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CA76C4A-2E6E-4301-B158-83862B028319}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CA76C4A-2E6E-4301-B158-83862B028319}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CA76C4A-2E6E-4301-B158-83862B028319}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F06E39F-D78C-4523-B912-5187F733324D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F06E39F-D78C-4523-B912-5187F733324D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F06E39F-D78C-4523-B912-5187F733324D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F06E39F-D78C-4523-B912-5187F733324D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68C23487-860D-4F26-88D1-850FA60ECF94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68C23487-860D-4F26-88D1-850FA60ECF94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68C23487-860D-4F26-88D1-850FA60ECF94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68C23487-860D-4F26-88D1-850FA60ECF94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89951121-F6DE-46AB-B3E3-FA6EB412362A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89951121-F6DE-46AB-B3E3-FA6EB412362A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89951121-F6DE-46AB-B3E3-FA6EB412362A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89951121-F6DE-46AB-B3E3-FA6EB412362A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8CA76C4A-2E6E-4301-B158-83862B028319} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
+		{0F06E39F-D78C-4523-B912-5187F733324D} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
+		{68C23487-860D-4F26-88D1-850FA60ECF94} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
+		{89951121-F6DE-46AB-B3E3-FA6EB412362A} = {EF4DE3FC-EB69-4CA2-85C6-220B9C6586F6}
+	EndGlobalSection
+EndGlobal

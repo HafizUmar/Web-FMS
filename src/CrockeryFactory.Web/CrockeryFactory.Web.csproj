@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>CrockeryFactory.Web</RootNamespace>
+    <AssemblyName>CrockeryFactory.Web</AssemblyName>
+    <UserSecretsId>crockery-factory-web</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrockeryFactory.Domain\CrockeryFactory.Domain.csproj" />
+    <ProjectReference Include="..\CrockeryFactory.Persistence\CrockeryFactory.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>
