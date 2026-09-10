@@ -2,7 +2,9 @@ using System.Text.Json.Serialization;
 using CrockeryFactory.Application.Abstractions;
 using CrockeryFactory.Application.Catalogue;
 using CrockeryFactory.Application.Common;
+using CrockeryFactory.Application.Admin;
 using CrockeryFactory.Application.Production;
+using CrockeryFactory.Application.Reports;
 using CrockeryFactory.Application.Sales;
 using CrockeryFactory.Application.Services;
 using CrockeryFactory.Application.Stock;
@@ -119,6 +121,11 @@ builder.Services.AddScoped<IProductionService, ProductionService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IDispatchService, DispatchService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IReasonCodeService, ReasonCodeService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IStockRebuildService, StockRebuildService>();
 
 // ---------------------------------------------------------------------------
 // MVC and error handling

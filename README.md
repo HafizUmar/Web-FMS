@@ -27,6 +27,7 @@ a price never rewrites a bill that has already gone out of the gate.
 | `src/CrockeryFactory.Application` | Services, DTOs, validation and the business rules |
 | `src/CrockeryFactory.Web` | Controllers, authentication, error mapping, and the single migration history under `Data/Migrations` |
 | `tests/CrockeryFactory.UnitTests` | Value-object behaviour, mapping guards, session and policy rules |
+| `src/CrockeryFactory.DevSeeder` | Development data generator, excluded from the release build |
 | `tests/CrockeryFactory.IntegrationTests` | The API against a real SQL Server |
 
 Modules are separated by namespace — `CrockeryFactory.Modules.Catalogue.*`,
@@ -196,6 +197,46 @@ The opening balance locks the moment anything is posted against the account. Cha
 afterwards silently rewrites every historical balance, including ones the customer has
 already been shown.
 
+## Development data
+
+`CrockeryFactory.DevSeeder` generates a database the application could plausibly have
+produced. That distinction is the whole design: rows written straight into the tables
+would violate BR-01 within a day of simulated trading - a dispatch of 500 cups against 80
+in stock - and a database that could not have been created by the application is useless
+for testing the rules it exists to exercise. So the generator walks forward one day at a
+time carrying a running balance, exactly as `StockService` does, and skips a line where
+the stock is not there rather than clamping it. Clamping would produce a suspiciously
+tidy database in which nothing is ever short.
+
+```bash
+export DOTNET_ENVIRONMENT=Development
+dotnet run --project src/CrockeryFactory.DevSeeder -- --months 3 --i-understand   --connection "Server=localhost,1433;Database=CrockeryDemo;User Id=sa;Password=...;TrustServerCertificate=True"
+```
+
+It refuses to run four ways, because only one of them has to fail open for a demo database
+to reach a factory: the environment must be Development, `--i-understand` must be present,
+and the database must contain no products and no dispatches.
+
+`--years 5` produces the PF-14 performance dataset.
+
+## Measured against five years of data
+
+Generated with `--years 5`: 4,646 production entries, 12,241 dispatches, 22,970 dispatch
+lines, 32,262 stock movements. Timed on SQL Server 2022:
+
+| Query | Time |
+|---|---|
+| Movement history, running balance, page 60 of the ledger | 33 ms |
+| RP-01 daily stock | 9 ms |
+| RP-02 outstanding, all customers | 8 ms |
+| RP-06 sales summary over a full year | 20 ms |
+| Current stock (PF-05) | < 1 ms |
+
+The dataset was also checked for the invariants it claims to hold: no negative balance
+anywhere, every cached balance equal to the sum of its ledger rows, every dispatch total
+equal to the sum of its lines, no duplicate document numbers, and ledger receipts exactly
+equal to good plus seconds - broken pieces never entered stock.
+
 ## Known gap
 
 `RATE_BELOW_COST` (spec section 3.7) is **not implemented**, because Phase 1's entities
@@ -207,7 +248,7 @@ list rate.
 
 ## Status
 
-Stages 1 to 4 of five are complete.
+All five stages are complete.
 
 - **Stage 1** - solution, domain, EF mapping, `InitialCreate` migration.
 - **Stage 2** - authentication and the authorisation matrix, RFC 7807 error mapping,
@@ -217,6 +258,12 @@ Stages 1 to 4 of five are complete.
   a running balance, stock adjustments, and production entries with cancellation.
 - **Stage 4** - customers with the outstanding report and statement, dispatches with rate
   resolution and snapshotting, and payments.
+- **Stage 5** - the daily stock, outstanding, production, sales and dashboard reports;
+  users, reason codes, settings and the read-only audit query; the stock-balance rebuild;
+  the anonymous health endpoint; and the development seeder.
 
-Reports, administration and the dev seeder (5) follow. 152 tests pass, the 96 integration
-tests among them against SQL Server 2022.
+180 tests pass, the 124 integration tests among them against SQL Server 2022.
+
+Still outstanding for Phase 1: QuestPDF rendering behind the document and report
+endpoints (they are routed, authorised and return `501` today), spreadsheet export, and
+the `RATE_BELOW_COST` warning described under Known gap above.

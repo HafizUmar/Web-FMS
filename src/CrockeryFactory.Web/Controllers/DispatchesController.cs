@@ -54,6 +54,28 @@ public sealed class DispatchesController : ControllerBase
         Ok(await _dispatches.ListAsync(
             new DispatchQuery(customerId, from, to, includeCancelled, page, pageSize), ct));
 
+    /// <summary>
+    /// RP-05. Routed and authorised now so the shape of the API is settled; it refuses
+    /// honestly until the renderer is wired in. Generated server-side regardless of what
+    /// the frontend is - a bill printed from a browser's print dialogue is at the mercy
+    /// of whatever margins that machine happens to have set.
+    /// </summary>
+    [HttpGet("{id:guid}/document")]
+    [Authorize(Policy = Policies.CanViewReports)]
+    public async Task<IActionResult> Document(
+        Guid id, [FromQuery] string copies = "original", CancellationToken ct = default)
+    {
+        // Confirms the dispatch exists first, so a wrong id gives 404 rather than a
+        // misleading "not implemented".
+        await _dispatches.GetAsync(id, ct);
+
+        throw new DomainException(
+            ErrorCodes.NotImplemented, "Document rendering not available yet",
+            StatusCodes.Status501NotImplemented,
+            $"The printed dispatch note ({copies}) is not available yet. " +
+            "The figures are all on the dispatch itself in the meantime.");
+    }
+
     /// <summary>Same day: clerk. Older: owner only. The rule depends on the document's date.</summary>
     [HttpPost("{id:guid}/cancel")]
     [Authorize(Policy = Policies.CanRecordTransactions)]

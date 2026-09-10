@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CrockeryFactory.DevSeeder</RootNamespace>
+    <AssemblyName>CrockeryFactory.DevSeeder</AssemblyName>
+
+    <!--
+      Excluded from the release build. A demo database shipped to a factory by accident
+      is a very bad day, and the surest way to prevent it is for the tool not to be in
+      the box at all.
+    -->
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrockeryFactory.Domain\CrockeryFactory.Domain.csproj" />
+    <ProjectReference Include="..\CrockeryFactory.Persistence\CrockeryFactory.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

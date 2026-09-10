@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.Application
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.IntegrationTests", "tests\CrockeryFactory.IntegrationTests\CrockeryFactory.IntegrationTests.csproj", "{65A5DBD7-8DD6-44BE-906C-C1C6215DD057}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.DevSeeder", "src\CrockeryFactory.DevSeeder\CrockeryFactory.DevSeeder.csproj", "{8BEAF9BD-830D-4FE3-B0C3-53E6FDECD8D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{65A5DBD7-8DD6-44BE-906C-C1C6215DD057}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65A5DBD7-8DD6-44BE-906C-C1C6215DD057}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65A5DBD7-8DD6-44BE-906C-C1C6215DD057}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BEAF9BD-830D-4FE3-B0C3-53E6FDECD8D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BEAF9BD-830D-4FE3-B0C3-53E6FDECD8D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BEAF9BD-830D-4FE3-B0C3-53E6FDECD8D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BEAF9BD-830D-4FE3-B0C3-53E6FDECD8D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8CA76C4A-2E6E-4301-B158-83862B028319} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
@@ -60,5 +66,6 @@ Global
 		{89951121-F6DE-46AB-B3E3-FA6EB412362A} = {EF4DE3FC-EB69-4CA2-85C6-220B9C6586F6}
 		{93F42D8A-A19C-4015-AF0D-ECB79DEE728F} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
 		{65A5DBD7-8DD6-44BE-906C-C1C6215DD057} = {EF4DE3FC-EB69-4CA2-85C6-220B9C6586F6}
+		{8BEAF9BD-830D-4FE3-B0C3-53E6FDECD8D4} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
 	EndGlobalSection
 EndGlobal
