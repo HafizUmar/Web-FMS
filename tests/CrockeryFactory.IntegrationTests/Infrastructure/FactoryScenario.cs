@@ -82,6 +82,48 @@ public sealed class FactoryScenario
         return line.ValueKind == JsonValueKind.Undefined ? 0 : line.GetProperty("quantity").GetInt32();
     }
 
+    public async Task<Guid> CreateCustomerAsync(
+        HttpClient client, string tag, decimal openingBalance = 0m)
+    {
+        var response = await client.PostAsJsonAsync("/api/v1/customers", new
+        {
+            code = $"C-{tag}-{Random.Shared.Next(10000, 99999)}",
+            name = $"{tag} Traders",
+            city = "Gujrat",
+            phone = "03001234567",
+            openingBalance,
+            openingBalanceAsOf = openingBalance == 0m ? null : Today().AddDays(-60).ToString("yyyy-MM-dd")
+        }, ApiClientExtensions.Json);
+
+        response.IsSuccessStatusCode.Should().BeTrue(
+            $"creating the test customer should succeed: {await response.Content.ReadAsStringAsync()}");
+
+        return (await response.ReadJsonAsync()).GetProperty("id").GetGuid();
+    }
+
+    public async Task<HttpResponseMessage> DispatchAsync(
+        HttpClient client, Guid customerId, object[] lines, DateOnly? date = null) =>
+        await client.PostAsJsonAsync("/api/v1/dispatches", new
+        {
+            customerId,
+            dispatchDate = (date ?? Today()).ToString("yyyy-MM-dd"),
+            lines,
+            vehicleNumber = "GJT-1234"
+        }, ApiClientExtensions.Json);
+
+    public static object Line(Guid productId, string grade, int quantity, decimal? unitRate = null) =>
+        new { productId, grade, quantity, unitRate };
+
+    public async Task<decimal> BalanceAsync(HttpClient client, Guid customerId)
+    {
+        var body = await (await client.GetAsync("/api/v1/customers/outstanding")).ReadJsonAsync();
+
+        var row = body.GetProperty("rows").EnumerateArray()
+            .FirstOrDefault(r => r.GetProperty("customerId").GetGuid() == customerId);
+
+        return row.ValueKind == JsonValueKind.Undefined ? 0m : row.GetProperty("outstanding").GetDecimal();
+    }
+
     public static DateOnly Today() => DateOnly.FromDateTime(DateTime.Now);
 
     /// <summary>CRACK, from the reference data the migration seeds.</summary>

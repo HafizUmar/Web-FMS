@@ -181,9 +181,33 @@ already left the godown the reversal would go negative, and the entry cannot be 
 at all - the clerk is told to record an adjustment instead, because "insufficient stock"
 on a cancellation reads as nonsense without that sentence.
 
+## The customer balance
+
+Opening balance, plus active dispatches, minus active payments. Payments are not
+allocated to particular bills: the customer pays something against what he owes, and
+forcing invoice-level allocation would only make the clerk invent it.
+
+That sum lives in exactly one place, `CustomerBalances`. Three implementations of it -
+one for the outstanding report, one for the statement's closing balance, one for the
+figure read aloud at the gate - would eventually disagree, and the customer would find it
+before we did.
+
+The opening balance locks the moment anything is posted against the account. Changing it
+afterwards silently rewrites every historical balance, including ones the customer has
+already been shown.
+
+## Known gap
+
+`RATE_BELOW_COST` (spec section 3.7) is **not implemented**, because Phase 1's entities
+define no cost price anywhere - there is nothing to compare a rate against. Implementing
+it needs a cost field on `Product` or `ProductPrice` and a decision about what "cost"
+means here (clay and glaze only, or a loaded rate including fuel and labour). Raised as an
+open item rather than guessed at. `RATE_BELOW_LIST` is implemented and warns at half the
+list rate.
+
 ## Status
 
-Stages 1 to 3 of five are complete.
+Stages 1 to 4 of five are complete.
 
 - **Stage 1** - solution, domain, EF mapping, `InitialCreate` migration.
 - **Stage 2** - authentication and the authorisation matrix, RFC 7807 error mapping,
@@ -191,6 +215,8 @@ Stages 1 to 3 of five are complete.
   endpoints.
 - **Stage 3** - the stock ledger and its cached balances, stock and movement queries with
   a running balance, stock adjustments, and production entries with cancellation.
+- **Stage 4** - customers with the outstanding report and statement, dispatches with rate
+  resolution and snapshotting, and payments.
 
-Sales (4), and reports, administration and the dev seeder (5) follow. 126 tests pass, the
-70 integration tests among them against SQL Server 2022.
+Reports, administration and the dev seeder (5) follow. 152 tests pass, the 96 integration
+tests among them against SQL Server 2022.

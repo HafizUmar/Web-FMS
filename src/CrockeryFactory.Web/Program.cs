@@ -3,6 +3,7 @@ using CrockeryFactory.Application.Abstractions;
 using CrockeryFactory.Application.Catalogue;
 using CrockeryFactory.Application.Common;
 using CrockeryFactory.Application.Production;
+using CrockeryFactory.Application.Sales;
 using CrockeryFactory.Application.Services;
 using CrockeryFactory.Application.Stock;
 using CrockeryFactory.Domain.Abstractions;
@@ -115,6 +116,9 @@ builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IStockQueries, StockQueries>();
 builder.Services.AddScoped<IStockAdjustments, StockAdjustments>();
 builder.Services.AddScoped<IProductionService, ProductionService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IDispatchService, DispatchService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 // ---------------------------------------------------------------------------
 // MVC and error handling
