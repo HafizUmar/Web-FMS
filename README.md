@@ -155,14 +155,42 @@ updates require `If-Match`. A stale version is `409 CONCURRENCY_CONFLICT`; a mis
 `428`, because "you never read this record" and "someone changed it since you read it" send
 the clerk to do different things. `If-Match: *` is refused rather than treated as agreement.
 
+## How stock moves
+
+`StockService` is the only writer to the ledger. Everything that changes stock - a firing,
+a dispatch, an adjustment, a cancellation - goes through it, which is what makes the
+polymorphic `ReferenceId` tractable: there is no foreign key from a movement to the four
+different tables it might point at, so referential integrity there is one class's job
+rather than everybody's.
+
+Two properties it guarantees:
+
+- **Every movement is checked before any is written.** A four-line dispatch that fails on
+  line three leaves nothing behind.
+- **It never calls `SaveChanges`.** The caller owns the transaction, so the ledger row,
+  the balance update, the document and the audit entry commit together or not at all. A
+  movement that commits without the document that caused it is exactly the corruption the
+  ledger exists to prevent.
+
+`StockBalances` is a cache of the ledger, updated in that same transaction. When the two
+disagree, the ledger wins - the rebuild endpoint in stage 5 is the reconciliation tool.
+
+Cancelling never deletes. A cancelled production entry keeps its row and its original
+movements, and gains reversing ones, so the history explains itself. Where the stock has
+already left the godown the reversal would go negative, and the entry cannot be cancelled
+at all - the clerk is told to record an adjustment instead, because "insufficient stock"
+on a cancellation reads as nonsense without that sentence.
+
 ## Status
 
-Stages 1 and 2 of five are complete.
+Stages 1 to 3 of five are complete.
 
 - **Stage 1** - solution, domain, EF mapping, `InitialCreate` migration.
 - **Stage 2** - authentication and the authorisation matrix, RFC 7807 error mapping,
   idempotency, ETag concurrency, the audit writer, document numbering, and the product
   endpoints.
+- **Stage 3** - the stock ledger and its cached balances, stock and movement queries with
+  a running balance, stock adjustments, and production entries with cancellation.
 
-Stock and production (3), sales (4), and reports, administration and the dev seeder (5)
-follow. 97 tests pass, the integration half of them against SQL Server 2022.
+Sales (4), and reports, administration and the dev seeder (5) follow. 126 tests pass, the
+70 integration tests among them against SQL Server 2022.
