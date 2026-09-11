@@ -10,6 +10,7 @@ using CrockeryFactory.Application.Services;
 using CrockeryFactory.Application.Stock;
 using CrockeryFactory.Domain.Abstractions;
 using CrockeryFactory.Persistence;
+using CrockeryFactory.Web.Infrastructure;
 using CrockeryFactory.Shared.Identity;
 using CrockeryFactory.Web.Auth;
 using CrockeryFactory.Web.Infrastructure.Errors;
@@ -176,6 +177,11 @@ var app = builder.Build();
 // Migrations are applied by the Setup tool, never here. With one instance startup
 // migration would work; a failed one would then leave the application in a crash loop
 // at a factory nobody can reach, during working hours (spec section 2.2).
+//
+// What does happen here is a read-only check that says plainly whether the database is
+// reachable, migrated and usable. Without it the first sign of a missing database is a
+// 500 on the login screen, which names neither the server nor the database.
+await DatabaseStartupCheck.ReportAsync(app);
 
 app.UseExceptionHandler();
 
