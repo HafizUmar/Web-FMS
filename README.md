@@ -246,6 +246,59 @@ means here (clay and glaze only, or a loaded rate including fuel and labour). Ra
 open item rather than guessed at. `RATE_BELOW_LIST` is implemented and warns at half the
 list rate.
 
+## Trying it out
+
+There is **no user interface** — this repository is the backend and a written
+specification for a frontend. To exercise the API, use Swagger UI.
+
+```bash
+# 1. A database
+docker run -d --name crockery-sql \
+  -e ACCEPT_EULA=Y -e MSSQL_SA_PASSWORD='Your!Password1' -e MSSQL_PID=Express \
+  -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+
+export CS="Server=localhost,1433;Database=CrockeryDemo;User Id=sa;Password=Your!Password1;TrustServerCertificate=True"
+
+# 2. Schema
+export CROCKERY_DESIGNTIME_CONNECTION="$CS"
+dotnet ef database update --project src/CrockeryFactory.Web --startup-project src/CrockeryFactory.Web
+
+# 3. Logins and demo data
+export DOTNET_ENVIRONMENT=Development
+dotnet run --project src/CrockeryFactory.DevSeeder -- --months 3 --i-understand --connection "$CS"
+
+# 4. Run it
+export ASPNETCORE_ENVIRONMENT=Development
+export ConnectionStrings__FactoryDatabase="$CS"
+dotnet run --project src/CrockeryFactory.Web
+```
+
+Then open **`https://localhost:7150/swagger`** (or `http://localhost:5150/swagger`).
+
+Sign in first — everything except `/health` and `/auth/login` requires a session:
+
+1. `POST /api/v1/auth/login` with `{ "userName": "owner", "password": "Factory!Pass99" }`
+2. The browser keeps the session cookie, so every other endpoint in Swagger now works.
+
+| Login | Role | Sees |
+|---|---|---|
+| `owner` | Owner | Everything, including prices and historical cancellations |
+| `clerk` | Clerk | Production, dispatches, payments, adjustments — no prices, no users |
+| `admin` | Administrator | Users, settings, audit — cannot record transactions |
+
+Password for all three: `Factory!Pass99`. They are created **only** by the development
+seeder, which refuses to run outside `Development`.
+
+> **A freshly migrated database has no login at all.** The migration seeds the roles and
+> an inactive `system` row that exists so seeded records have an author; it has no
+> password. Provisioning the first real account at a factory is the Setup tool's job
+> (Architecture section 3.1) and is not part of this phase — it must prompt for a
+> password rather than ship a known one.
+
+Signing in as each of the three users in turn is the quickest way to see the
+authorisation matrix working: the same endpoint returns `200` for one and `403` for
+another.
+
 ## Frontend contract
 
 `docs/frontend-pdr.md` is the frontend Product Requirements Document: every endpoint with
