@@ -65,6 +65,30 @@ export const routes: Routes = [
           import('./features/reports/reports-page').then((m) => m.ReportsPageComponent),
       },
       {
+        path: 'admin/users',
+        canActivate: [requiresPermission('CanManageUsers')],
+        loadComponent: () =>
+          import('./features/admin/users-page').then((m) => m.UsersPageComponent),
+      },
+      {
+        path: 'admin/settings',
+        canActivate: [requiresPermission('CanManageSettings')],
+        loadComponent: () =>
+          import('./features/admin/settings-page').then((m) => m.SettingsPageComponent),
+      },
+      {
+        path: 'admin/reason-codes',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/admin/reason-codes-page').then((m) => m.ReasonCodesPageComponent),
+      },
+      {
+        path: 'admin/audit',
+        canActivate: [requiresPermission('CanViewAudit')],
+        loadComponent: () =>
+          import('./features/admin/audit-page').then((m) => m.AuditPageComponent),
+      },
+      {
         path: 'change-password',
         loadComponent: () =>
           import('./features/auth/change-password').then((m) => m.ChangePasswordComponent),

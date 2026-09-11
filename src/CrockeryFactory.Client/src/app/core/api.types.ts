@@ -477,3 +477,61 @@ export interface DashboardResponse {
   topDebtors: OutstandingRow[];
   generatedAt: IsoTimestamp;
 }
+
+// ---------------------------------------------------------------------------
+// Administration
+// ---------------------------------------------------------------------------
+
+export interface AppUserResponse {
+  id: string;
+  userName: string;
+  fullName: string;
+  roles: string[];
+  isActive: boolean;
+  createdAt: IsoTimestamp;
+  lastLoginAt?: IsoTimestamp;
+}
+
+export interface CreateUserRequest {
+  userName: string;
+  fullName: string;
+  password: string;
+  role: string;
+}
+
+export interface UpdateUserRequest {
+  fullName: string;
+  role: string;
+}
+
+export interface UpdateReasonCodeRequest {
+  description: string;
+  sortOrder: number;
+}
+
+/** The server takes the whole map at once, so a save is one request however many changed. */
+export interface UpdateSettingsRequest {
+  values: Record<string, string>;
+}
+
+export interface AuditEntryResponse {
+  id: string;
+  entityName: string;
+  entityId: string;
+  action: string;
+  /** JSON, as a string. The server stores the document as written, not as parsed. */
+  oldValues?: string;
+  newValues?: string;
+  userId: string;
+  userName: string;
+  occurredAt: IsoTimestamp;
+}
+
+export interface RebuildResult {
+  balancesExamined: number;
+  balancesCorrected: number;
+  balancesInserted: number;
+  balancesRemoved: number;
+  corrections: string[];
+  completedAt: IsoTimestamp;
+}

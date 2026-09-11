@@ -85,6 +85,13 @@ export class LookupsService {
     this.settings.set(await this.loadSettingsIfPermitted());
   }
 
+  /** Called after an administrator edits or retires one, so the pickers agree with the list. */
+  async reloadReasonCodes(): Promise<void> {
+    this.reasonCodes.set(
+      await firstValueFrom(this.http.get<ReasonCode[]>('/api/v1/reason-codes')),
+    );
+  }
+
   /** Server order is sortOrder then code, which is how the factory wants them listed. */
   reasonsFor(type: ReasonCodeType): ReasonCode[] {
     return this.reasonCodes().filter((r) => r.type === type && r.isActive);
