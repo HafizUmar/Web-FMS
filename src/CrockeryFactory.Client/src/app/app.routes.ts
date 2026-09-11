@@ -29,6 +29,18 @@ export const routes: Routes = [
           import('./features/products/products-page').then((m) => m.ProductsPageComponent),
       },
       {
+        path: 'production',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/production/production-page').then((m) => m.ProductionPageComponent),
+      },
+      {
+        path: 'stock',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/stock/stock-page').then((m) => m.StockPageComponent),
+      },
+      {
         path: 'change-password',
         loadComponent: () =>
           import('./features/auth/change-password').then((m) => m.ChangePasswordComponent),

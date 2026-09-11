@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { FactorySetting, QualityGrade, ReasonCode, ReasonCodeType } from './api.types';
+import { FactorySetting, ProductListItem, QualityGrade, ReasonCode, ReasonCodeType } from './api.types';
 
 /**
  * Reason codes and factory settings.
@@ -18,18 +18,55 @@ export class LookupsService {
 
   private readonly reasonCodes = signal<ReasonCode[]>([]);
   private readonly settings = signal<FactorySetting[]>([]);
+  private readonly products = signal<ProductListItem[]>([]);
 
   readonly allReasonCodes = this.reasonCodes.asReadonly();
   readonly allSettings = this.settings.asReadonly();
 
+  /**
+   * Active products, for the pickers on every transaction form. A factory carries tens
+   * of products, not thousands, so the whole list is held and filtered in memory - a
+   * round trip per keystroke is exactly what the 45-second and 90-second targets cannot
+   * afford on factory WiFi.
+   */
+  readonly activeProducts = this.products.asReadonly();
+
   async load(): Promise<void> {
-    const [codes, settings] = await Promise.all([
+    const [codes, settings, products] = await Promise.all([
       firstValueFrom(this.http.get<ReasonCode[]>('/api/v1/reason-codes')),
       this.loadSettingsIfPermitted(),
+      this.loadProducts(),
     ]);
 
     this.reasonCodes.set(codes);
     this.settings.set(settings);
+    this.products.set(products);
+  }
+
+  private async loadProducts(): Promise<ProductListItem[]> {
+    const page = await firstValueFrom(
+      this.http.get<{ items: ProductListItem[] }>('/api/v1/products?page=1&pageSize=200'),
+    );
+
+    return page.items;
+  }
+
+  /** Called after a product is created or its stock moves, so pickers stay current. */
+  async reloadProducts(): Promise<void> {
+    this.products.set(await this.loadProducts());
+  }
+
+  productById(id: string): ProductListItem | undefined {
+    return this.products().find((p) => p.id === id);
+  }
+
+  /** What is on hand for a product and grade, from the cached catalogue. */
+  stockFor(productId: string, grade: QualityGrade): number {
+    return this.productById(productId)?.stock.find((s) => s.grade === grade)?.quantity ?? 0;
+  }
+
+  rateFor(productId: string, grade: QualityGrade): number | undefined {
+    return this.productById(productId)?.prices.find((p) => p.grade === grade)?.unitRate;
   }
 
   /**

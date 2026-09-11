@@ -165,3 +165,115 @@ export const PERMISSIONS = [
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
+
+// ---------------------------------------------------------------------------
+// Production
+// ---------------------------------------------------------------------------
+
+export interface ProductionEntry {
+  id: string;
+  entryNumber: string;
+  productId: string;
+  productCode: string;
+  productName: string;
+  entryDate: IsoDate;
+  quantityGood: number;
+  quantitySeconds: number;
+  quantityBroken: number;
+  totalFired: number;
+  lossPercentage: number;
+  breakageReason?: string;
+  batchReference?: string;
+  notes?: string;
+  status: DocumentStatus;
+  enteredBy: string;
+  createdAt: IsoTimestamp;
+  warnings: string[];
+}
+
+export interface CreateProductionEntryRequest {
+  productId: string;
+  entryDate: IsoDate;
+  quantityGood: number;
+  quantitySeconds: number;
+  quantityBroken: number;
+  breakageReasonCodeId?: string | null;
+  batchReference?: string | null;
+  notes?: string | null;
+}
+
+export interface CancelRequest {
+  reason: string;
+}
+
+export interface ProductionSummaryRow {
+  groupKey: string;
+  groupLabel: string;
+  totalFired: number;
+  totalGood: number;
+  totalSeconds: number;
+  totalBroken: number;
+  lossPercentage: number;
+  secondsPercentage: number;
+  entryCount: number;
+}
+
+export type ProductionGroupBy = 'Product' | 'Day' | 'Month';
+
+// ---------------------------------------------------------------------------
+// Stock
+// ---------------------------------------------------------------------------
+
+export interface StockLine {
+  productId: string;
+  productCode: string;
+  productName: string;
+  grade: QualityGrade;
+  quantity: number;
+  unitRate?: number;
+  stockValue?: number;
+  lastMovementAt?: IsoTimestamp;
+}
+
+export interface StockResponse {
+  lines: StockLine[];
+  totalUnits: number;
+  totalValue: number;
+  asOf: IsoDate;
+}
+
+export interface StockMovementItem {
+  id: string;
+  occurredOn: IsoDate;
+  grade: QualityGrade;
+  quantity: number;
+  movementType: StockMovementType;
+  referenceNumber?: string;
+  reasonDescription?: string;
+  notes?: string;
+  enteredBy: string;
+  createdAt: IsoTimestamp;
+  runningBalance: number;
+}
+
+export interface CreateAdjustmentRequest {
+  productId: string;
+  grade: QualityGrade;
+  quantityChange: number;
+  reasonCodeId: string;
+  adjustedOn: IsoDate;
+  notes?: string | null;
+}
+
+export interface AdjustmentResponse {
+  id: string;
+  adjustmentNumber: string;
+  productId: string;
+  productName: string;
+  grade: QualityGrade;
+  quantityChange: number;
+  resultingBalance: number;
+  reasonDescription: string;
+  adjustedOn: IsoDate;
+  createdAt: IsoTimestamp;
+}
