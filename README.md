@@ -27,6 +27,7 @@ a price never rewrites a bill that has already gone out of the gate.
 | `src/CrockeryFactory.Application` | Services, DTOs, validation and the business rules |
 | `src/CrockeryFactory.Web` | Controllers, authentication, error mapping, and the single migration history under `Data/Migrations` |
 | `tests/CrockeryFactory.UnitTests` | Value-object behaviour, mapping guards, session and policy rules |
+| `src/CrockeryFactory.Client` | Angular 21 client, built into the host's `wwwroot` |
 | `src/CrockeryFactory.DevSeeder` | Development data generator, excluded from the release build |
 | `tests/CrockeryFactory.IntegrationTests` | The API against a real SQL Server |
 
@@ -246,34 +247,111 @@ means here (clay and glaze only, or a loaded rate including fuel and labour). Ra
 open item rather than guessed at. `RATE_BELOW_LIST` is implemented and warns at half the
 list rate.
 
-## Trying it out
+## The client
 
-There is **no user interface** — this repository is the backend and a written
-specification for a frontend. To exercise the API, use Swagger UI.
+Angular 21 with Angular Material, in `src/CrockeryFactory.Client`, built into
+`src/CrockeryFactory.Web/wwwroot` and served by the same host.
+
+**Same-origin is a requirement, not a preference.** The session cookie is
+`SameSite=Strict`, so a client on another origin would never have it sent. In development
+the Angular dev server proxies `/api` to the backend, which keeps the browser on one
+origin; in production the built client is served by the host itself. That also means one
+thing to deploy to the factory.
+
+Fonts are bundled rather than fetched from Google. The factory runs on an isolated LAN
+with no route to `fonts.googleapis.com`, and when that fetch fails every Material icon
+renders as its raw ligature text.
 
 ```bash
-# 1. A database
-docker run -d --name crockery-sql \
-  -e ACCEPT_EULA=Y -e MSSQL_SA_PASSWORD='Your!Password1' -e MSSQL_PID=Express \
-  -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+cd src/CrockeryFactory.Client
+npm install          # .npmrc sets legacy-peer-deps - see the note in that file
+npm start            # dev server on :4200, proxying /api to :5150
+```
 
-export CS="Server=localhost,1433;Database=CrockeryDemo;User Id=sa;Password=Your!Password1;TrustServerCertificate=True"
+Run the backend on `:5150` at the same time. Work on the client through `:4200` for hot
+reload; everything else goes through `:5150`.
 
-# 2. Schema
-export CROCKERY_DESIGNTIME_CONNECTION="$CS"
+`dotnet publish` builds the client into `wwwroot` automatically, so a deployment is one
+command. `dotnet build` deliberately does not — an npm build on every backend compile
+would slow the inner loop for no benefit. Pass `-p:SkipClientBuild=true` to publish
+without it.
+
+**Node 20.19+, 22.12+ or 24+** is required (Angular 21's floor).
+
+### What is built
+
+Stage 1 of the client is complete: the application shell, authentication, routing and
+guards, the error model, paging, and **Products** end to end — list with search and
+paging, create, edit with ETag concurrency, price changes, and deactivate. Production,
+Stock, Dispatches, Customers, Payments, Reports and the administration screens follow in
+later stages; their menu entries are present and their pages are not yet built.
+
+## Trying it out
+
+To exercise the API directly rather than through the client, use Swagger UI.
+
+**Step 1 — point it at your SQL Server.** Edit
+`src/CrockeryFactory.Web/appsettings.json`. The shipped default is a local SQL Express
+instance:
+
+```json
+"ConnectionStrings": {
+  "FactoryDatabase": "Server=.\\SQLEXPRESS;Database=CrockeryFactory;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True"
+}
+```
+
+Common alternatives: `Server=localhost` (default instance), `Server=localhost,1433` with
+`User Id=sa;Password=...` (a container), `Server=(localdb)\\MSSQLLocalDB` (LocalDB).
+
+**`dotnet ef` reads this same file**, so the migration and the application always agree
+about which server they are talking to. It prints the target before it does anything:
+
+```
+[ef] Using connection from appsettings (Development): server '.\SQLEXPRESS', database 'CrockeryFactory'
+```
+
+**Check that line matches the server you have open in SSMS before going further.** To
+target a different database without editing the file, set `CROCKERY_DESIGNTIME_CONNECTION`,
+which overrides it.
+
+**Steps 2 to 4 — create, seed, run.**
+
+```bash
+# 2. Create the schema. Prints the server it is writing to.
 dotnet ef database update --project src/CrockeryFactory.Web --startup-project src/CrockeryFactory.Web
 
 # 3. Logins and demo data
 export DOTNET_ENVIRONMENT=Development
-dotnet run --project src/CrockeryFactory.DevSeeder -- --months 3 --i-understand --connection "$CS"
+export CROCKERY_SEED_CONNECTION="<the same connection string as appsettings.json>"
+dotnet run --project src/CrockeryFactory.DevSeeder -- --months 3 --i-understand
 
 # 4. Run it
 export ASPNETCORE_ENVIRONMENT=Development
-export ConnectionStrings__FactoryDatabase="$CS"
 dotnet run --project src/CrockeryFactory.Web
 ```
 
-Then open **`https://localhost:7150/swagger`** (or `http://localhost:5150/swagger`).
+If you would rather run SQL Server in a container than install it:
+
+```bash
+docker run -d --name crockery-sql \
+  -e ACCEPT_EULA=Y -e MSSQL_SA_PASSWORD='Your!Password1' -e MSSQL_PID=Express \
+  -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+```
+
+and set the connection string to
+`Server=localhost,1433;Database=CrockeryFactory;User Id=sa;Password=Your!Password1;TrustServerCertificate=True`.
+
+### If no database appears
+
+`dotnet ef database update` prints the server and database it is about to write to. If
+that line names a different instance from the one you are looking at in SSMS, the schema
+was created there — that is the whole reason the line exists. Fix the connection string in
+`appsettings.json`, or set `CROCKERY_DESIGNTIME_CONNECTION`, and run it again.
+
+If no connection string can be found at all, the command fails with an explanation rather
+than quietly defaulting to LocalDB.
+
+Then open **`https://localhost:7150/`** for the client, or **`/swagger`** for the API.
 
 Sign in first — everything except `/health` and `/auth/login` requires a session:
 

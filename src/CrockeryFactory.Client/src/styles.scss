@@ -1,0 +1,405 @@
+// Font files are registered in angular.json's styles array rather than imported here,
+// because Sass cannot namespace a stylesheet named 300.css. They are bundled rather than
+// fetched from Google: the factory runs on an isolated LAN with no route to
+// fonts.googleapis.com, and when that fetch fails Material icons render as their raw
+// ligature text - 'more_vert' instead of the glyph - on every screen.
+
+@use '@angular/material' as mat;
+
+/* ==========================================================================
+   Theme
+
+   One palette, defined once as custom properties, so a component never picks
+   a colour out of the air. Every surface, border and status colour below has
+   a light and a dark value, which is what makes the dark theme a switch
+   rather than a rewrite.
+
+   Violet carries the chrome; a warm kiln orange carries attention. The pair
+   is deliberate - this is a ceramics factory, and the warm accent is the one
+   colour on screen that looks like fired clay.
+   ========================================================================== */
+
+html {
+  color-scheme: light;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$violet-palette,
+      tertiary: mat.$orange-palette,
+    ),
+    typography: Roboto,
+    density: -1,
+  ));
+
+  /* ---- Brand ---- */
+  --brand-50:  #f3f1ff;
+  --brand-100: #e9e5ff;
+  --brand-200: #d4ccff;
+  --brand-300: #b3a5fb;
+  --brand-400: #8f78f5;
+  --brand-500: #6d4fe8;
+  --brand-600: #5b34d4;
+  --brand-700: #4c28b0;
+  --brand-800: #3f238f;
+  --brand-900: #2e1a68;
+
+  /* The kiln. Used for the figure that matters and for nothing decorative. */
+  --ember-100: #ffeeda;
+  --ember-300: #ffc178;
+  --ember-500: #f08c1a;
+  --ember-600: #d9740b;
+  --ember-700: #a8540a;
+
+  /* ---- Surfaces ---- */
+  --app-bg: #f4f4fb;
+  --app-bg-accent: radial-gradient(1200px 600px at 12% -10%, #ece7ff 0%, transparent 55%),
+                   radial-gradient(900px 500px at 100% 0%, #fff1e0 0%, transparent 45%);
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f7f7fc;
+  --surface-hover: #f6f4ff;
+
+  /* ---- Lines and text ---- */
+  --line: #e6e4f0;
+  --line-strong: #d5d2e4;
+  --ink: #1d1a2b;
+  --ink-2: #4a4660;
+  --ink-3: #78738f;
+
+  /* ---- Status. Background, border and text travel together. ---- */
+  --ok-bg: #e7f7ee;      --ok-line: #b3e5c8;   --ok-ink: #0f6b3f;
+  --warn-bg: #fff4e2;    --warn-line: #ffd9a0; --warn-ink: #8a4b00;
+  --bad-bg: #fdeceb;     --bad-line: #f7c8c4;  --bad-ink: #b3261e;
+  --info-bg: #e9f2fe;    --info-line: #bcd8f7; --info-ink: #14508c;
+
+  /* ---- Depth. Layered rather than one flat drop, which is what reads as soft. ---- */
+  --shadow-1: 0 1px 2px rgba(29, 26, 43, .06), 0 1px 3px rgba(29, 26, 43, .04);
+  --shadow-2: 0 2px 4px rgba(29, 26, 43, .05), 0 6px 16px rgba(29, 26, 43, .07);
+  --shadow-3: 0 8px 24px rgba(29, 26, 43, .10), 0 2px 6px rgba(29, 26, 43, .06);
+  --shadow-brand: 0 6px 18px rgba(91, 52, 212, .26);
+
+  --radius: 14px;
+  --radius-sm: 10px;
+
+  /* The chrome. One gradient, reused by the toolbar, the rail and the login panel. */
+  --chrome: linear-gradient(135deg, #4c28b0 0%, #6d4fe8 52%, #8b5cf6 100%);
+
+  /*
+    Material generates its own violet from the palette, and that violet is a pure,
+    electric one - correct for a demo, too loud for a screen a clerk looks at all day.
+    Repointing the system tokens at the brand ramp means every Material control picks up
+    the same violet the chrome uses, rather than a second one beside it.
+  */
+  --mat-sys-primary: var(--brand-600);
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-primary-container: var(--brand-100);
+  --mat-sys-on-primary-container: var(--brand-800);
+  --mat-sys-tertiary: var(--ember-600);
+  --mat-sys-on-tertiary: #ffffff;
+  --mat-sys-error: var(--bad-ink);
+  --mat-sys-surface: var(--surface);
+  --mat-sys-on-surface: var(--ink);
+  --mat-sys-on-surface-variant: var(--ink-2);
+  --mat-sys-outline: var(--line-strong);
+  --mat-sys-outline-variant: var(--line);
+}
+
+/* ==========================================================================
+   Dark theme
+
+   Only the tokens change. Nothing below this block, and no component, knows
+   which theme is running.
+   ========================================================================== */
+html.dark {
+  color-scheme: dark;
+
+  --app-bg: #14121c;
+  --app-bg-accent: radial-gradient(1100px 560px at 10% -10%, #241e3d 0%, transparent 55%),
+                   radial-gradient(800px 460px at 100% 0%, #2c2018 0%, transparent 45%);
+  --surface: #1e1b2b;
+  --surface-raised: #252235;
+  --surface-sunken: #191623;
+  --surface-hover: #2a2540;
+
+  --line: #322d46;
+  --line-strong: #413a5c;
+  --ink: #ece9f6;
+  --ink-2: #b8b2cc;
+  --ink-3: #8d87a3;
+
+  /* Tinted dark grounds rather than the light backgrounds dimmed - a washed-out
+     pastel on a dark surface reads as a rendering fault, not as a status. */
+  --ok-bg: #14301f;      --ok-line: #1f5637;   --ok-ink: #7fdca7;
+  --warn-bg: #33240e;    --warn-line: #5e441a; --warn-ink: #fbc46a;
+  --bad-bg: #361a1b;     --bad-line: #612c2c;  --bad-ink: #f2a09a;
+  --info-bg: #16273d;    --info-line: #274a72; --info-ink: #8fc2f5;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-2: 0 2px 4px rgba(0, 0, 0, .35), 0 8px 20px rgba(0, 0, 0, .40);
+  --shadow-3: 0 10px 30px rgba(0, 0, 0, .5);
+  --shadow-brand: 0 6px 18px rgba(109, 79, 232, .35);
+
+  --chrome: linear-gradient(135deg, #2b1a5c 0%, #3f2a94 55%, #5b34d4 100%);
+
+  /* On a dark ground the 600 ramp is too dim to read as the accent, so the brand
+     lightens by two steps rather than the surfaces darkening around it. */
+  --mat-sys-primary: var(--brand-300);
+  --mat-sys-on-primary: #20114a;
+  --mat-sys-primary-container: var(--brand-800);
+  --mat-sys-on-primary-container: var(--brand-100);
+  --mat-sys-tertiary: var(--ember-300);
+  --mat-sys-on-tertiary: #3b1d00;
+  --mat-sys-error: var(--bad-ink);
+  --mat-sys-surface: var(--surface);
+  --mat-sys-on-surface: var(--ink);
+  --mat-sys-on-surface-variant: var(--ink-2);
+  --mat-sys-outline: var(--line-strong);
+  --mat-sys-outline-variant: var(--line);
+
+  @include mat.theme((
+    color: (
+      primary: mat.$violet-palette,
+      tertiary: mat.$orange-palette,
+      theme-type: dark,
+    ),
+    typography: Roboto,
+    density: -1,
+  ));
+}
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  color: var(--ink);
+  background-color: var(--app-bg);
+  background-image: var(--app-bg-accent);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   Shared page furniture
+
+   Every screen has a title, a subtitle and a card of content. Defining that
+   once here is what stops eleven pages drifting apart.
+   ========================================================================== */
+
+.page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.page__header h1 {
+  margin: 0 0 .2rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+
+.page__sub {
+  margin: 0;
+  color: var(--ink-3);
+  max-width: 72ch;
+}
+
+/* The card every table, form and panel sits in. */
+.table-wrap, .surface-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+
+.table-wrap { overflow-x: auto; }
+
+.empty {
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--ink-3);
+}
+
+/* Columns of figures are compared down the page, so the digits have to line up. */
+.figure, .num { font-variant-numeric: tabular-nums; }
+
+/* ==========================================================================
+   Material overrides
+
+   Kept here rather than per component so a table looks the same everywhere.
+   ========================================================================== */
+
+.mat-mdc-form-field { width: 100%; }
+
+/* Tables: a quiet tinted header, hairline rows, and a hover that tracks the
+   row a finger is on without shouting. */
+.mat-mdc-table {
+  background: transparent;
+}
+
+.mat-mdc-header-row {
+  background: var(--surface-sunken);
+  border-bottom: 1px solid var(--line);
+}
+
+.mat-mdc-header-cell {
+  color: var(--ink-3);
+  font-weight: 600;
+  font-size: .74rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.mat-mdc-cell {
+  color: var(--ink-2);
+  border-bottom-color: var(--line);
+}
+
+.mat-mdc-row {
+  transition: background-color .12s ease;
+}
+
+.mat-mdc-row:hover {
+  background: var(--surface-hover);
+}
+
+.mat-mdc-paginator {
+  background: transparent;
+  color: var(--ink-3);
+}
+
+/* Filled buttons carry the brand and a matching shadow, so the primary action
+   on a screen is findable without reading it. */
+.mat-mdc-unelevated-button.mat-primary,
+.mat-mdc-raised-button.mat-primary {
+  box-shadow: var(--shadow-brand);
+}
+
+.mat-mdc-button-base {
+  border-radius: 999px !important;
+  letter-spacing: .01em;
+}
+
+/* Icon buttons stay square-ish; a pill icon button looks like a mistake. */
+.mat-mdc-icon-button { border-radius: 50% !important; }
+
+.mat-mdc-dialog-surface {
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-3) !important;
+}
+
+.mat-mdc-dialog-title { letter-spacing: -.01em; }
+
+.mat-mdc-tab-group, .mat-mdc-tab-header { border-radius: var(--radius) var(--radius) 0 0; }
+
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  border-radius: var(--radius-sm) !important;
+}
+
+/* A focus ring that is visible on both themes. Keyboard users are a minority
+   here, but the ones there are use this all day. */
+:focus-visible {
+  outline: 2px solid var(--brand-400);
+  outline-offset: 2px;
+}
+
+/* Scrollbars, so a long stock list does not end in a strip of default grey. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .92em;
+}
+
+/* Angular Material v21 does not set an icon font on mat-icon - it inherits the body
+   font, so a ligature like `more_vert` renders as the literal text "more_vert" on every
+   screen. This is what the font's own .material-icons class does, applied to the element
+   Material actually renders. */
+mat-icon.mat-icon {
+  font-family: 'Material Icons', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
+}
+
+/* An icon supplied as SVG must not be given a text font. */
+mat-icon.mat-icon[data-mat-icon-type='svg'] { font-family: inherit; }
+
+/* An inline icon sitting next to a word, at the size of the word. */
+mat-icon.inline {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* ==========================================================================
+   Status pills
+
+   Colour alone is never the signal: each pill carries an icon and a word, so
+   it survives being printed in grey or read by someone who cannot separate
+   red from green.
+   ========================================================================== */
+
+.status, .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .16rem .6rem .16rem .45rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+  background: var(--ok-bg);
+  border: 1px solid var(--ok-line);
+  color: var(--ok-ink);
+}
+
+.pill--warn, .status--warn, .status--off {
+  background: var(--warn-bg);
+  border-color: var(--warn-line);
+  color: var(--warn-ink);
+}
+
+.pill--bad, .status--bad {
+  background: var(--bad-bg);
+  border-color: var(--bad-line);
+  color: var(--bad-ink);
+}
+
+.pill--info, .status--info {
+  background: var(--info-bg);
+  border-color: var(--info-line);
+  color: var(--info-ink);
+}
+
+.pill--muted, .status--muted {
+  background: var(--surface-sunken);
+  border-color: var(--line);
+  color: var(--ink-3);
+}

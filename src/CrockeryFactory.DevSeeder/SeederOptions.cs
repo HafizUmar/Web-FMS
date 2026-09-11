@@ -52,7 +52,10 @@ public sealed record SeederOptions(
         Options:
           --months <n>      Months of trading to generate (default 3)
           --years <n>       Shorthand for --months (n * 12)
-          --connection <cs> Override the connection string
+          --connection <cs> Override the connection string. Without it the seeder uses
+                            CROCKERY_SEED_CONNECTION, then CROCKERY_DESIGNTIME_CONNECTION,
+                            then src/CrockeryFactory.Web/appsettings.json - the same
+                            database the application and "dotnet ef" use.
           --i-understand    Required. Confirms this is not a factory database.
 
         Refuses to run unless DOTNET_ENVIRONMENT is Development, the flag above is

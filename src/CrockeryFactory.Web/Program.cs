@@ -190,6 +190,68 @@ else
 }
 
 app.UseHttpsRedirection();
+
+// ---------------------------------------------------------------------------
+// The Angular client
+// ---------------------------------------------------------------------------
+//
+// Served from this host on purpose: the session cookie is SameSite=Strict, so a client
+// on another origin would never have it sent. One origin also means one thing to deploy.
+//
+// A client-side route such as /products or /dispatches/{id} is not a file and has no
+// endpoint, so it is rewritten to the shell BEFORE routing runs. Doing it here rather
+// than with MapFallbackToFile keeps SPA navigation out of the authorisation pipeline
+// entirely - the fallback policy closes every endpoint by default, and the login page
+// lives inside the shell, so a protected shell would lock the user out of the screen
+// that signs them in.
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path;
+
+    var isClientRoute =
+        HttpMethods.IsGet(context.Request.Method) &&
+        !path.StartsWithSegments("/api", StringComparison.OrdinalIgnoreCase) &&
+        !path.StartsWithSegments("/swagger", StringComparison.OrdinalIgnoreCase) &&
+        // A path with an extension is a real asset request; if the file is missing it
+        // must 404 rather than quietly return HTML, which is impossible to debug.
+        !Path.HasExtension(path.Value);
+
+    if (isClientRoute)
+        context.Request.Path = "/index.html";
+
+    await next();
+});
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+// A request for an asset that got this far does not exist - static files has already had
+// its chance at it. Answering here keeps it a 404. Left to fall through it would reach
+// the authorisation middleware, whose fallback policy applies even to requests that
+// matched no endpoint, and a missing script chunk would report itself as "not signed in".
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path;
+
+    var isMissingAsset =
+        HttpMethods.IsGet(context.Request.Method) &&
+        !path.StartsWithSegments("/api", StringComparison.OrdinalIgnoreCase) &&
+        !path.StartsWithSegments("/swagger", StringComparison.OrdinalIgnoreCase) &&
+        Path.HasExtension(path.Value);
+
+    if (isMissingAsset)
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        return;
+    }
+
+    await next();
+});
+
+// Explicit, so it runs after the static files above rather than being auto-inserted
+// ahead of them.
+app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

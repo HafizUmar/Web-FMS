@@ -21,6 +21,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.Integration
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrockeryFactory.DevSeeder", "src\CrockeryFactory.DevSeeder\CrockeryFactory.DevSeeder.csproj", "{8BEAF9BD-830D-4FE3-B0C3-53E6FDECD8D4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CrockeryFactory.Client (Angular)", "src\CrockeryFactory.Client", "{B7E5A9C1-4F3D-4A28-9E61-7C2D8F0A5B34}"
+	ProjectSection(SolutionItems) = preProject
+		src\CrockeryFactory.Client\README.md = src\CrockeryFactory.Client\README.md
+		src\CrockeryFactory.Client\package.json = src\CrockeryFactory.Client\package.json
+		src\CrockeryFactory.Client\angular.json = src\CrockeryFactory.Client\angular.json
+		src\CrockeryFactory.Client\proxy.conf.json = src\CrockeryFactory.Client\proxy.conf.json
+		src\CrockeryFactory.Client\src\styles.scss = src\CrockeryFactory.Client\src\styles.scss
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +69,7 @@ Global
 		{8BEAF9BD-830D-4FE3-B0C3-53E6FDECD8D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{B7E5A9C1-4F3D-4A28-9E61-7C2D8F0A5B34} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
 		{8CA76C4A-2E6E-4301-B158-83862B028319} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
 		{0F06E39F-D78C-4523-B912-5187F733324D} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
 		{68C23487-860D-4F26-88D1-850FA60ECF94} = {36E884B2-0BD4-4480-A804-AEF355B2B5A4}
