@@ -138,13 +138,13 @@ import { ProductionEntry } from '../../core/api.types';
     .quantities { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
     .totals {
       display: flex; gap: 1.5rem; align-items: center;
-      background: #f1f3f4; border-radius: 8px; padding: .6rem .9rem; margin: .25rem 0 .75rem;
+      background: var(--surface-sunken); border-radius: 8px; padding: .6rem .9rem; margin: .25rem 0 .75rem;
     }
-    .totals--high { background: #fff4e5; color: #663c00; }
+    .totals--high { background: var(--warn-bg); color: var(--warn-ink); }
     .totals__note { display: flex; align-items: center; gap: .35rem; font-size: .85rem; margin-left: auto; }
     .saved {
       display: flex; gap: .6rem; align-items: center;
-      background: #e6f4ea; border: 1px solid #b7e1c4; color: #137333;
+      background: var(--ok-bg); border: 1px solid var(--ok-line); color: var(--ok-ink);
       border-radius: 8px; padding: .7rem 1rem; margin-bottom: 1rem;
     }
   `,

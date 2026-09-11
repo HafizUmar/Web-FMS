@@ -222,28 +222,22 @@ import { PaymentFormComponent } from './payment-form';
     </mat-tab-group>
   `,
   styles: `
-    .page__header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-    .page__header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
-    .page__sub { margin: 0 0 1rem; opacity: .7; }
     .filters { display: flex; gap: 1.5rem; align-items: center; margin: 1rem 0 .5rem; }
     .filters__search { width: 320px; }
     .asof { opacity: .7; margin: 1rem 0 .5rem; }
-    .table-wrap { overflow-x: auto; background: #fff; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); }
     table { width: 100%; }
     .num { text-align: right; }
     td.num, th.num { padding-right: 1.25rem; }
     .owing { font-weight: 500; }
-    .advance { color: #137333; font-weight: 400; }
-    .stale { color: #b26a00; }
-    .very-stale { color: #c5221f; font-weight: 500; }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .badge { font-size: .75rem; padding: .15rem .5rem; border-radius: 999px; background: #e6f4ea; color: #137333; }
-    .badge--off { background: #f1f3f4; color: #5f6368; }
+    .advance { color: var(--ok-ink); font-weight: 400; }
+    .stale { color: var(--warn-ink); }
+    .very-stale { color: var(--bad-ink); font-weight: 500; }
+    .badge { font-size: .75rem; padding: .15rem .5rem; border-radius: 999px; background: var(--ok-bg); color: var(--ok-ink); }
+    .badge--off { background: var(--surface-sunken); color: var(--ink-3); }
     .row--off { opacity: .55; }
     .actions { width: 48px; text-align: right; }
-    .empty { padding: 2rem; text-align: center; opacity: .6; }
     .total { display: flex; justify-content: space-between; padding: .9rem 1.25rem; margin-top: .5rem;
-             background: #fff; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); }
+             background: var(--surface); border-radius: 8px; border: 1px solid var(--line); }
     .summary { opacity: .65; font-size: .85rem; margin: .25rem 0 0; }
   `,
 })

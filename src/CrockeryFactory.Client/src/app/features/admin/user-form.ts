@@ -103,8 +103,8 @@ const ROLES = [
   `,
   styles: `
     .form { display: flex; flex-direction: column; gap: .25rem; min-width: min(460px, 80vw); }
-    .warning { display: flex; gap: .5rem; align-items: flex-start; background: #fff4e5;
-               border: 1px solid #ffd9a0; color: #663c00; padding: .6rem .75rem;
+    .warning { display: flex; gap: .5rem; align-items: flex-start; background: var(--warn-bg);
+               border: 1px solid var(--warn-line); color: var(--warn-ink); padding: .6rem .75rem;
                border-radius: 8px; margin: .5rem 0 0; font-size: .85rem; }
   `,
 })

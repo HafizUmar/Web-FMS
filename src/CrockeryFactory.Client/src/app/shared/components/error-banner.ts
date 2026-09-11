@@ -32,12 +32,12 @@ import { ProblemDetails } from '../../core/problem-details';
       gap: .75rem;
       padding: .875rem 1rem;
       border-radius: 8px;
-      background: #fdecea;
-      border: 1px solid #f5c6c2;
-      color: #611a15;
+      background: var(--bad-bg);
+      border: 1px solid var(--bad-line);
+      color: var(--bad-ink);
       margin-bottom: 1rem;
     }
-    .banner--warn { background: #fff4e5; border-color: #ffd9a0; color: #663c00; }
+    .banner--warn { background: var(--warn-bg); border-color: var(--warn-line); color: var(--warn-ink); }
     .banner__body p { margin: .25rem 0 0; }
     .banner__body small { display: block; margin-top: .35rem; opacity: .75; }
   `,

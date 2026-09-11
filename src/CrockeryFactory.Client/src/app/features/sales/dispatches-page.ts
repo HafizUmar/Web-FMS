@@ -154,25 +154,19 @@ import { CancelDialogComponent } from '../production/cancel-dialog';
     }
   `,
   styles: `
-    .page__header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-    .page__header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
-    .page__sub { margin: 0 0 1rem; opacity: .7; }
     .filters { margin-bottom: .5rem; }
-    .table-wrap { overflow-x: auto; background: #fff; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); }
     table { width: 100%; }
     .num { text-align: right; }
     td.num, th.num { padding-right: 1.1rem; }
     .amount { font-weight: 500; }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .badge { font-size: .75rem; padding: .15rem .5rem; border-radius: 999px; background: #e6f4ea; color: #137333; }
-    .badge--off { background: #fce8e6; color: #c5221f; }
+    .badge { font-size: .75rem; padding: .15rem .5rem; border-radius: 999px; background: var(--ok-bg); color: var(--ok-ink); }
+    .badge--off { background: var(--bad-bg); color: var(--bad-ink); }
     .row--off { opacity: .55; }
     .actions { width: 150px; text-align: right; white-space: nowrap; }
     .lines__host td { padding: 0 !important; border-bottom: 0; }
-    .lines { background: #fafafa; padding: .75rem 1.25rem; }
+    .lines { background: var(--surface-sunken); padding: .75rem 1.25rem; }
     .lines__row { display: grid; grid-template-columns: 40px 3fr 1fr 1fr 1fr 1.2fr; gap: .5rem; padding: .3rem 0; }
     .lines__note { opacity: .6; font-size: .8rem; margin: .5rem 0 0; }
-    .empty { padding: 2rem; text-align: center; opacity: .6; }
     .summary { opacity: .65; font-size: .85rem; margin: .25rem 0 0; }
   `,
 })

@@ -112,7 +112,7 @@ export interface CustomerFormData {
     .two { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
     .warn {
       display: flex; gap: .5rem; align-items: flex-start; font-size: .85rem;
-      background: #fff4e5; border: 1px solid #ffd9a0; color: #663c00;
+      background: var(--warn-bg); border: 1px solid var(--warn-line); color: var(--warn-ink);
       border-radius: 8px; padding: .6rem .75rem; margin: 0 0 .75rem;
     }
     .warn mat-icon { font-size: 18px; width: 18px; height: 18px; }

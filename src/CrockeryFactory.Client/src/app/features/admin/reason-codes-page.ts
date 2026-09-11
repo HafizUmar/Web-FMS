@@ -130,22 +130,12 @@ const TYPES: ReasonCodeType[] = [
     </p>
   `,
   styles: `
-    .page__header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-    .page__header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
-    .page__sub { margin: 0 0 1rem; opacity: .7; max-width: 70ch; }
     .filters { display: flex; gap: 1.5rem; align-items: center; margin-bottom: .75rem; }
     .filters__type { width: 220px; }
-    .table-wrap { background: #fff; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); overflow-x: auto; }
     table { width: 100%; }
     .num { text-align: right; padding-right: 1.25rem; }
-    .figure { font-variant-numeric: tabular-nums; }
-    .status { display: inline-flex; align-items: center; gap: .3rem; }
-    .status--off { color: #8a4b00; }
-    mat-icon.inline { font-size: 18px; width: 18px; height: 18px; }
     .row--off { opacity: .6; }
     .actions { text-align: right; white-space: nowrap; width: 110px; }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .empty { padding: 2rem; text-align: center; opacity: .6; }
     .foot { margin: .75rem 0 0; opacity: .65; font-size: .875rem; max-width: 70ch; }
   `,
 })

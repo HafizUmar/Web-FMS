@@ -91,8 +91,8 @@ const TYPES: ReasonCodeType[] = [
   `,
   styles: `
     .form { display: flex; flex-direction: column; gap: .25rem; min-width: min(480px, 80vw); }
-    .locked { display: flex; gap: .5rem; align-items: flex-start; background: #fff4e5;
-              border: 1px solid #ffd9a0; color: #663c00; padding: .6rem .75rem;
+    .locked { display: flex; gap: .5rem; align-items: flex-start; background: var(--warn-bg);
+              border: 1px solid var(--warn-line); color: var(--warn-ink); padding: .6rem .75rem;
               border-radius: 8px; margin: 0 0 .75rem; font-size: .85rem; }
   `,
 })

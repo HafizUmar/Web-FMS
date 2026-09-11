@@ -246,9 +246,7 @@ const GRADE_VALUES: { value: string; label: QualityGrade }[] = [
     </section>
   `,
   styles: `
-    .page__header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
-    .page__sub { margin: 0 0 1rem; opacity: .7; max-width: 70ch; }
-    .group { background: #fff; border: 1px solid rgba(0,0,0,.08); border-radius: 8px;
+    .group { background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
              padding: 1.25rem; margin-bottom: 1rem; }
     .group h2 { margin: 0 0 .25rem; font-size: 1.05rem; }
     .group__note { margin: 0 0 1rem; opacity: .7; font-size: .875rem; max-width: 72ch; }
@@ -256,16 +254,16 @@ const GRADE_VALUES: { value: string; label: QualityGrade }[] = [
     .grades { grid-column: 1 / -1; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
     .grades__label { font-weight: 500; }
     .grades__hint { flex-basis: 100%; margin: 0; opacity: .65; font-size: .8rem; max-width: 70ch; }
-    .field__error { flex-basis: 100%; margin: 0; color: #b3261e; font-size: .8rem; }
+    .field__error { flex-basis: 100%; margin: 0; color: var(--bad-ink); font-size: .8rem; }
     .bar { position: sticky; bottom: 0; display: flex; align-items: center; gap: .75rem;
-           background: #fff; border: 1px solid rgba(0,0,0,.08); border-radius: 8px;
+           background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
            padding: .75rem 1.25rem; }
     .bar__state { margin-right: auto; opacity: .7; font-size: .875rem; }
     .maintenance { margin-top: 1rem; }
     .rebuild { display: flex; gap: .75rem; align-items: flex-start; margin-top: 1rem;
-               background: #e8f5e9; border: 1px solid #b7dfbb; color: #14532d;
+               background: var(--ok-bg); border: 1px solid var(--ok-line); color: var(--ok-ink);
                border-radius: 8px; padding: .75rem 1rem; }
-    .rebuild--changed { background: #fff4e5; border-color: #ffd9a0; color: #663c00; }
+    .rebuild--changed { background: var(--warn-bg); border-color: var(--warn-line); color: var(--warn-ink); }
     .rebuild p { margin: .2rem 0 0; font-size: .875rem; }
     .rebuild__list { margin: .5rem 0 0; padding-left: 1.1rem; font-size: .8rem; }
     .rebuild__more { opacity: .75; }

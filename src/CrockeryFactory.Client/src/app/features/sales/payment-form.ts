@@ -114,7 +114,7 @@ const METHODS: { value: PaymentMethod; label: string; needsReference: boolean }[
     .form { display: flex; flex-direction: column; gap: .25rem; min-width: min(520px, 85vw); }
     .saved {
       display: flex; gap: .6rem; align-items: center;
-      background: #e6f4ea; border: 1px solid #b7e1c4; color: #137333;
+      background: var(--ok-bg); border: 1px solid var(--ok-line); color: var(--ok-ink);
       border-radius: 8px; padding: .7rem 1rem; margin-bottom: 1rem;
     }
   `,

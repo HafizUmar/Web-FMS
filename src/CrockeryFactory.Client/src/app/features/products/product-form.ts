@@ -130,10 +130,10 @@ export interface ProductFormData {
     .form { display: flex; flex-direction: column; gap: .25rem; min-width: min(520px, 80vw); }
     .prices__heading { margin: .75rem 0 .25rem; font-size: 1rem; }
     .prices__hint { opacity: .7; margin: 0 0 .5rem; font-size: .85rem; }
-    .prices__error { color: #b3261e; margin: 0 0 .5rem; font-size: .85rem; }
+    .prices__error { color: var(--bad-ink); margin: 0 0 .5rem; font-size: .85rem; }
     .prices__row { display: grid; grid-template-columns: 1fr 1fr auto; gap: .5rem; align-items: center; }
-    .locked { display: flex; gap: .5rem; align-items: flex-start; background: #fff4e5;
-              border: 1px solid #ffd9a0; color: #663c00; padding: .6rem .75rem;
+    .locked { display: flex; gap: .5rem; align-items: flex-start; background: var(--warn-bg);
+              border: 1px solid var(--warn-line); color: var(--warn-ink); padding: .6rem .75rem;
               border-radius: 8px; margin: 0 0 .75rem; font-size: .85rem; }
   `,
 })

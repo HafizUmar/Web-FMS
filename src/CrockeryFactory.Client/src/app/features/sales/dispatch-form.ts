@@ -167,22 +167,22 @@ const MAX_LINES = 50;
     }
     .lines__head { font-size: .78rem; opacity: .6; padding: .25rem .25rem 0; text-transform: uppercase; letter-spacing: .04em; }
     .lines__head .num, .num { text-align: right; }
-    .lines__row--dup { background: #fce8e6; border-radius: 8px; }
+    .lines__row--dup { background: var(--bad-bg); border-radius: 8px; }
     .lines__amount { text-align: right; font-weight: 500; padding-bottom: 1.25rem; }
     .lines__warn, .dup {
       display: flex; gap: .4rem; align-items: center; font-size: .85rem;
-      color: #b26a00; margin: -.5rem 0 .5rem .25rem;
+      color: var(--warn-ink); margin: -.5rem 0 .5rem .25rem;
     }
-    .dup { color: #c5221f; }
+    .dup { color: var(--bad-ink); }
     .lines__warn mat-icon, .dup mat-icon { font-size: 18px; width: 18px; height: 18px; }
     .total {
       display: flex; justify-content: space-between; align-items: center;
-      background: #f1f3f4; border-radius: 8px; padding: .75rem 1rem; margin-top: .25rem;
+      background: var(--surface-sunken); border-radius: 8px; padding: .75rem 1rem; margin-top: .25rem;
       font-size: 1.05rem;
     }
     .saved {
       display: flex; gap: .6rem; align-items: center;
-      background: #e6f4ea; border: 1px solid #b7e1c4; color: #137333;
+      background: var(--ok-bg); border: 1px solid var(--ok-line); color: var(--ok-ink);
       border-radius: 8px; padding: .7rem 1rem; margin-bottom: 1rem;
     }
   `,

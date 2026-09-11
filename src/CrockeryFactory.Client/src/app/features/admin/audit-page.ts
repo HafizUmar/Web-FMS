@@ -184,24 +184,20 @@ const ENTITIES = [
     }
   `,
   styles: `
-    .page__header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
-    .page__sub { margin: 0 0 1rem; opacity: .7; }
     .filters { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: .5rem; }
     .filters__entity { width: 200px; }
     .filters__user { width: 200px; }
     .filters__date { width: 170px; }
-    .table-wrap { background: #fff; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); overflow-x: auto; }
     table.mat-mdc-table { width: 100%; }
     .action { display: inline-flex; align-items: center; gap: .3rem; }
-    .action--delete, .action--deactivate, .action--cancel { color: #8a4b00; }
-    mat-icon.inline { font-size: 18px; width: 18px; height: 18px; }
+    .action--delete, .action--deactivate, .action--cancel { color: var(--warn-ink); }
     .actions { text-align: right; width: 56px; }
     /* multiTemplateDataRows renders this row for every entry; a collapsed one must
        take no space, or the table gains a blank line between every record. */
     .detail-row { height: 0; }
     .detail-row td { border-bottom: none; padding: 0; }
     .detail-cell { padding: 0 !important; }
-    .detail { padding: .75rem 1.5rem 1.25rem; background: #fafafa; }
+    .detail { padding: .75rem 1.5rem 1.25rem; background: var(--surface-sunken); }
     .detail__none { margin: 0; opacity: .7; font-size: .875rem; }
     .detail__id { margin: .75rem 0 0; opacity: .55; font-size: .75rem; }
     .diff { border-collapse: collapse; font-size: .875rem; }
@@ -209,11 +205,9 @@ const ENTITIES = [
                text-transform: uppercase; letter-spacing: .04em; }
     .diff td { padding: .2rem 1rem .2rem 0; vertical-align: top; }
     .diff__field { font-weight: 500; white-space: nowrap; }
-    .diff__from { color: #8a4b00; text-decoration: line-through; max-width: 34ch; }
-    .diff__to { color: #1a6b2f; max-width: 34ch; }
+    .diff__from { color: var(--warn-ink); text-decoration: line-through; max-width: 34ch; }
+    .diff__to { color: var(--ok-ink); max-width: 34ch; }
     .diff__arrow { opacity: .4; }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .empty { padding: 2rem; text-align: center; opacity: .6; }
     .summary-line { margin: .25rem 0 0; opacity: .65; font-size: .875rem; }
   `,
 })

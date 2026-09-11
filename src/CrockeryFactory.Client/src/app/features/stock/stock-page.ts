@@ -64,7 +64,7 @@ import { MovementsDialogComponent } from './movements-dialog';
         <input matInput [matDatepicker]="picker" [formControl]="asOf" [max]="today" />
         <mat-datepicker-toggle matIconSuffix [for]="picker" />
         <mat-datepicker #picker />
-        <mat-hint>Blank shows the live figure</mat-hint>
+        <mat-hint>Blank shows live stock</mat-hint>
       </mat-form-field>
 
       <mat-checkbox [formControl]="onlyInStock">Only in stock</mat-checkbox>
@@ -140,28 +140,22 @@ import { MovementsDialogComponent } from './movements-dialog';
     }
   `,
   styles: `
-    .page__header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-    .page__header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
-    .page__sub { margin: 0 0 1rem; opacity: .7; }
     .filters { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: .5rem; }
     .filters__search { width: 260px; }
     .filters__grade { width: 150px; }
-    .filters__date { width: 190px; }
+    .filters__date { width: 210px; }
     .historical {
       display: flex; gap: .5rem; align-items: center;
-      background: #e8f4fd; border: 1px solid #b6dcf7; color: #0b4a6f;
+      background: var(--info-bg); border: 1px solid var(--info-line); color: var(--info-ink);
       border-radius: 8px; padding: .6rem 1rem; margin-bottom: 1rem;
     }
-    .table-wrap { overflow-x: auto; background: #fff; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); }
     table { width: 100%; }
     .num { text-align: right; }
     td.num, th.num { padding-right: 1.25rem; }
     .qty { font-weight: 500; }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
     .actions { width: 48px; text-align: right; }
-    .empty { padding: 2rem; text-align: center; opacity: .6; }
     .totals { display: flex; gap: 2rem; padding: .9rem 1.25rem; margin-top: .5rem;
-              background: #fff; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); }
+              background: var(--surface); border-radius: 8px; border: 1px solid var(--line); }
     .totals__note { margin-left: auto; opacity: .6; font-size: .85rem; }
   `,
 })

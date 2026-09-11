@@ -115,12 +115,11 @@ export interface StatementDialogData { customerId: string; customerName: string 
     .num { text-align: right; }
     td.num, th.num { padding-right: 1rem; }
     .balance { font-weight: 500; }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
     .row--cancelled { opacity: .5; font-style: italic; }
-    .row--opening { background: #f1f3f4; font-weight: 500; }
+    .row--opening { background: var(--surface-sunken); font-weight: 500; }
     .closing { display: flex; justify-content: space-between; padding: .9rem 1rem; margin-top: .5rem;
-               background: #f1f3f4; border-radius: 8px; font-size: 1.05rem; }
-    .advance { color: #137333; }
+               background: var(--surface-sunken); border-radius: 8px; font-size: 1.05rem; }
+    .advance { color: var(--ok-ink); }
     .note { opacity: .6; font-size: .8rem; margin: .5rem 0 0; }
   `,
 })

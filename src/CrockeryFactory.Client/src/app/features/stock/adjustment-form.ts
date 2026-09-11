@@ -114,9 +114,9 @@ const NOTES_REQUIRED_ABOVE = 500;
     .form { display: flex; flex-direction: column; gap: .25rem; min-width: min(520px, 85vw); }
     .balance {
       display: flex; gap: .75rem; align-items: center;
-      background: #f1f3f4; border-radius: 8px; padding: .6rem .9rem; margin: .25rem 0 .75rem;
+      background: var(--surface-sunken); border-radius: 8px; padding: .6rem .9rem; margin: .25rem 0 .75rem;
     }
-    .balance--bad { background: #fce8e6; color: #c5221f; }
+    .balance--bad { background: var(--bad-bg); color: var(--bad-ink); }
     .balance__note { margin-left: auto; font-size: .85rem; }
     mat-icon { font-size: 18px; width: 18px; height: 18px; opacity: .6; }
   `,

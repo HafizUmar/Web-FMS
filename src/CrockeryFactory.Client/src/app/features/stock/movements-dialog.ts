@@ -114,11 +114,9 @@ export interface MovementsDialogData {
     table { width: 100%; }
     .num { text-align: right; }
     td.num, th.num { padding-right: 1rem; }
-    .in { color: #137333; }
-    .out { color: #c5221f; }
+    .in { color: var(--ok-ink); }
+    .out { color: var(--bad-ink); }
     .balance { font-weight: 500; }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .empty { padding: 2rem; text-align: center; opacity: .6; }
     .summary { opacity: .65; font-size: .85rem; margin: 0; }
   `,
 })

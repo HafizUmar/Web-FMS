@@ -439,10 +439,8 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
     </ng-template>
   `,
   styles: `
-    .page__header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
-    .page__sub { margin: 0 0 1rem; opacity: .7; }
 
-    mat-tab-group { background: #fff; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); }
+    mat-tab-group { background: var(--surface); border-radius: 8px; border: 1px solid var(--line); }
     .tab { padding: 1.25rem; }
 
     .filters { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
@@ -457,26 +455,21 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
     .lede--inline { margin: 0; }
     .asof { margin: .75rem 0 0; opacity: .65; font-size: .875rem; max-width: 70ch; }
 
-    .table-wrap { overflow-x: auto; border: 1px solid rgba(0,0,0,.08); border-radius: 8px; }
     table { width: 100%; }
     .num { text-align: right; }
     td.num, th.num, td.num.mat-mdc-footer-cell { padding-right: 1.25rem; }
 
     /* Columns of numbers are compared down the page, so the digits have to line up. */
-    .figure { font-variant-numeric: tabular-nums; }
     .closing { font-weight: 500; }
 
-    .footer-row { background: #f5f5f5; }
-    .footer-row td { font-weight: 500; border-top: 2px solid rgba(0,0,0,.12); }
+    .footer-row { background: var(--surface-sunken); }
+    .footer-row td { font-weight: 500; border-top: 2px solid var(--line-strong); }
 
     .loss { display: inline-flex; align-items: center; gap: .25rem; justify-content: flex-end; }
-    .loss.is-high, .is-stale { color: #8a4b00; font-weight: 500; }
+    .loss.is-high, .is-stale { color: var(--warn-ink); font-weight: 500; }
     .is-stale { display: inline-flex; align-items: center; gap: .25rem; }
-    mat-icon.inline { font-size: 18px; width: 18px; height: 18px; }
 
     .muted { opacity: .6; }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .empty { padding: 2rem; text-align: center; opacity: .6; }
   `,
 })
 export class ReportsPageComponent {

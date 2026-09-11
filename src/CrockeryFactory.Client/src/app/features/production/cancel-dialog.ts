@@ -61,7 +61,7 @@ const MINIMUM_REASON = 10;
   styles: `
     .consequence { margin: 0 0 1rem; }
     mat-form-field { width: min(480px, 80vw); }
-    .short { color: #b3261e; }
+    .short { color: var(--bad-ink); }
   `,
 })
 export class CancelDialogComponent {

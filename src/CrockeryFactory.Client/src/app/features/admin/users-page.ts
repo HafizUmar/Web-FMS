@@ -114,22 +114,13 @@ import { ResetPasswordDialogComponent } from './reset-password-dialog';
     </div>
   `,
   styles: `
-    .page__header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-    .page__header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
-    .page__sub { margin: 0 0 1rem; opacity: .7; }
-    .table-wrap { background: #fff; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); overflow-x: auto; }
     table { width: 100%; }
-    .status { display: inline-flex; align-items: center; gap: .3rem; }
-    .status--off { color: #8a4b00; }
-    mat-icon.inline { font-size: 18px; width: 18px; height: 18px; }
     .row--off { opacity: .6; }
     .you { margin-left: .4rem; font-size: .7rem; text-transform: uppercase; letter-spacing: .04em;
-           background: rgba(0,0,0,.07); border-radius: 4px; padding: .1rem .35rem; opacity: .8; }
+           background: var(--line); border-radius: 4px; padding: .1rem .35rem; opacity: .8; }
     .actions { text-align: right; white-space: nowrap; }
     .blocked { display: inline-flex; align-items: center; gap: .25rem; font-size: .75rem;
                opacity: .6; padding-left: .5rem; }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .empty { padding: 2rem; text-align: center; opacity: .6; }
   `,
 })
 export class UsersPageComponent {

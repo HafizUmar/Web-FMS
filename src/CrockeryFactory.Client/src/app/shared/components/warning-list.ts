@@ -32,9 +32,9 @@ const MESSAGES: Record<string, string> = {
   `,
   styles: `
     .warnings {
-      background: #e8f4fd;
-      border: 1px solid #b6dcf7;
-      color: #0b4a6f;
+      background: var(--info-bg);
+      border: 1px solid var(--info-line);
+      color: var(--info-ink);
       border-radius: 8px;
       padding: .75rem 1rem;
       margin-bottom: 1rem;

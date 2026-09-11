@@ -62,7 +62,6 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
   styles: `
     .who { margin: 0 0 1rem; max-width: 46ch; }
     .form { display: flex; flex-direction: column; min-width: min(420px, 80vw); }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   `,
 })
 export class ResetPasswordDialogComponent {
