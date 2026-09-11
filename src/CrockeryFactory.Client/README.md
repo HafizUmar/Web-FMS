@@ -43,9 +43,17 @@ install.
 npm start          # ng serve on http://localhost:4200
 ```
 
-`proxy.conf.json` forwards `/api` and `/swagger` from `:4200` to the API on `:5150`, which
-keeps the session cookie same-origin during development. Start the API first, or every
-request will fail with a connection error rather than an authentication one.
+`proxy.conf.json` forwards `/api` and `/swagger` from `:4200` to the API's **HTTPS**
+endpoint on `:7150`, which keeps the session cookie same-origin during development. Start
+the API first, or every request fails with a connection error rather than an
+authentication one.
+
+It has to be the HTTPS endpoint. The API calls `UseHttpsRedirection`, so proxying to
+`http://localhost:5150` gets a 307 to `https://localhost:7150`; the browser treats that as
+a cross-origin hop from `:4200`, the request fails as a network error, and the login page
+reports "Cannot reach the server" while the API is in fact running normally. The session
+cookie is `CookieSecurePolicy.Always` as well, so it would not be stored off a plain-http
+response in any case.
 
 For a production-shaped build that refreshes `wwwroot` as you edit:
 

@@ -1,12 +1,28 @@
 {
+  "//": [
+    "Targets the HTTPS endpoint, not http://localhost:5150.",
+    "",
+    "The API calls UseHttpsRedirection, so a plain-http call to :5150 comes back as a 307",
+    "to https://localhost:7150. The browser then treats that as a cross-origin hop from",
+    ":4200 and the request fails as a network error - which surfaces in the UI as 'Cannot",
+    "reach the server' even though the API is running perfectly.",
+    "",
+    "The session cookie is also CookieSecurePolicy.Always, so it would never be stored off",
+    "a plain-http response anyway. Browsers treat localhost as a secure context, so a",
+    "Secure cookie proxied to http://localhost:4200 is still accepted.",
+    "",
+    "secure:false accepts the ASP.NET Core self-signed development certificate. It applies",
+    "only to this dev-server hop and ships nowhere near production, where the client is",
+    "served from the API's own origin and no proxy exists at all."
+  ],
   "/api": {
-    "target": "http://localhost:5150",
+    "target": "https://localhost:7150",
     "secure": false,
     "changeOrigin": false,
     "logLevel": "debug"
   },
   "/swagger": {
-    "target": "http://localhost:5150",
+    "target": "https://localhost:7150",
     "secure": false,
     "changeOrigin": false
   }
