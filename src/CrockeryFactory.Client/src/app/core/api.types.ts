@@ -418,3 +418,62 @@ export interface Payment {
   createdAt: IsoTimestamp;
   warnings: string[];
 }
+
+// ---------------------------------------------------------------------------
+// Reports
+// ---------------------------------------------------------------------------
+
+export interface DailyStockRow {
+  productId: string;
+  productCode: string;
+  productName: string;
+  grade: QualityGrade;
+  opening: number;
+  received: number;
+  dispatched: number;
+  adjusted: number;
+  closing: number;
+}
+
+export interface DailyStockResponse {
+  date: IsoDate;
+  rows: DailyStockRow[];
+  totalOpening: number;
+  totalReceived: number;
+  totalDispatched: number;
+  totalAdjusted: number;
+  totalClosing: number;
+}
+
+export type SalesGroupBy = 'Customer' | 'Product' | 'Month';
+
+export interface SalesSummaryRow {
+  groupKey: string;
+  groupLabel: string;
+  dispatchCount: number;
+  totalQuantity: number;
+  totalAmount: number;
+}
+
+export interface SalesSummaryResponse {
+  from: IsoDate;
+  to: IsoDate;
+  groupBy: SalesGroupBy;
+  rows: SalesSummaryRow[];
+  totalQuantity: number;
+  totalAmount: number;
+}
+
+export interface DashboardResponse {
+  totalUnitsInStock: number;
+  stockValue: number;
+  totalOutstanding: number;
+  customersWithBalance: number;
+  unitsProducedThisMonth: number;
+  lossPercentageThisMonth: number;
+  salesThisMonth: number;
+  paymentsThisMonth: number;
+  lowStockProducts: StockLine[];
+  topDebtors: OutstandingRow[];
+  generatedAt: IsoTimestamp;
+}

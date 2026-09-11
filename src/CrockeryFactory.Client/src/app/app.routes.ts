@@ -59,6 +59,12 @@ export const routes: Routes = [
           import('./features/sales/payments-page').then((m) => m.PaymentsPageComponent),
       },
       {
+        path: 'reports',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/reports/reports-page').then((m) => m.ReportsPageComponent),
+      },
+      {
         path: 'change-password',
         loadComponent: () =>
           import('./features/auth/change-password').then((m) => m.ChangePasswordComponent),
