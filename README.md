@@ -246,6 +246,17 @@ means here (clay and glaze only, or a loaded rate including fuel and labour). Ra
 open item rather than guessed at. `RATE_BELOW_LIST` is implemented and warns at half the
 list rate.
 
+## Frontend contract
+
+`docs/frontend-pdr.md` is the frontend Product Requirements Document: every endpoint with
+real captured request and response JSON, per-page layouts, validation rules, error
+handling, conditional rendering and paging.
+
+Its examples are not transcribed from the DTOs — they are captured from the running API by
+`tests/CrockeryFactory.IntegrationTests/ContractCapture.cs`, which is skipped unless
+`CAPTURE_DIR` is set. Regenerate them after any contract change rather than editing the
+document by hand.
+
 ## Status
 
 All five stages are complete.
