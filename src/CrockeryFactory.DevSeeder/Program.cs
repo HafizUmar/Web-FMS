@@ -32,15 +32,27 @@ if (!options.Acknowledged)
     return 1;
 }
 
+// Same resolution order as the application and as "dotnet ef", so all three write to
+// the same database without being told three times.
 var connectionString = options.ConnectionString
-                       ?? Environment.GetEnvironmentVariable("CROCKERY_SEED_CONNECTION");
+                       ?? Environment.GetEnvironmentVariable("CROCKERY_SEED_CONNECTION")
+                       ?? Environment.GetEnvironmentVariable("CROCKERY_DESIGNTIME_CONNECTION")
+                       ?? ConnectionFromWebAppSettings();
 
 if (string.IsNullOrWhiteSpace(connectionString))
 {
     Console.Error.WriteLine(
-        "No connection string. Pass --connection or set CROCKERY_SEED_CONNECTION.");
+        """
+        No connection string found. Looked for, in order:
+          1. --connection <cs>
+          2. CROCKERY_SEED_CONNECTION
+          3. CROCKERY_DESIGNTIME_CONNECTION
+          4. ConnectionStrings:FactoryDatabase in src/CrockeryFactory.Web/appsettings.json
+        """);
     return 1;
 }
+
+Console.WriteLine($"Seeding into {Describe(connectionString)}.");
 
 var dbOptions = new DbContextOptionsBuilder<FactoryDbContext>()
     .UseSqlServer(connectionString)
@@ -73,8 +85,6 @@ if (await db.Products.AnyAsync())
         "Refusing to run: this database already contains products. Seed only an empty database.");
     return 1;
 }
-
-PrintLogins(seededUsers);
 
 var to = DateOnly.FromDateTime(DateTime.Now);
 var from = to.AddMonths(-options.Months);
@@ -114,6 +124,50 @@ static void PrintLogins(IReadOnlyList<(string UserName, string Role)> users)
     Console.WriteLine("\nSign in with any of these (development only):\n");
     foreach (var (userName, role) in users)
         Console.WriteLine($"  {userName,-8} {role,-14} password: {UserSeeder.DevPassword}");
+}
+
+/// <summary>
+/// Reads the web project's appsettings.json so the seeder targets the same database the
+/// application does. Walks up from the current directory because the seeder is normally
+/// run from the repository root.
+/// </summary>
+static string? ConnectionFromWebAppSettings()
+{
+    var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+
+    for (var i = 0; i < 6 && directory is not null; i++, directory = directory.Parent)
+    {
+        var candidate = Path.Combine(
+            directory.FullName, "src", "CrockeryFactory.Web", "appsettings.json");
+
+        if (!File.Exists(candidate))
+            continue;
+
+        using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllText(candidate));
+
+        if (document.RootElement.TryGetProperty("ConnectionStrings", out var strings) &&
+            strings.TryGetProperty("FactoryDatabase", out var value) &&
+            value.GetString() is { Length: > 0 } connection)
+        {
+            return connection;
+        }
+    }
+
+    return null;
+}
+
+/// <summary>Server and database only - the rest of a connection string may hold a password.</summary>
+static string Describe(string connectionString)
+{
+    try
+    {
+        var builder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
+        return $"server '{builder.DataSource}', database '{builder.InitialCatalog}'";
+    }
+    catch
+    {
+        return "(unreadable connection string)";
+    }
 }
 
 /// <summary>
