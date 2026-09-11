@@ -277,3 +277,144 @@ export interface AdjustmentResponse {
   adjustedOn: IsoDate;
   createdAt: IsoTimestamp;
 }
+
+// ---------------------------------------------------------------------------
+// Sales
+// ---------------------------------------------------------------------------
+
+export interface Customer {
+  id: string;
+  code: string;
+  name: string;
+  city?: string;
+  phone?: string;
+  address?: string;
+  openingBalance: number;
+  openingBalanceAsOf?: IsoDate;
+  isActive: boolean;
+  notes?: string;
+  createdAt: IsoTimestamp;
+}
+
+export interface CreateCustomerRequest {
+  code: string;
+  name: string;
+  city?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  openingBalance: number;
+  openingBalanceAsOf?: IsoDate | null;
+  notes?: string | null;
+}
+
+export type UpdateCustomerRequest = CreateCustomerRequest;
+
+export interface OutstandingRow {
+  customerId: string;
+  code: string;
+  name: string;
+  city?: string;
+  phone?: string;
+  openingBalance: number;
+  totalDispatched: number;
+  totalPaid: number;
+  outstanding: number;
+  lastDispatchDate?: IsoDate;
+  lastPaymentDate?: IsoDate;
+  daysSinceLastPayment: number;
+}
+
+export interface OutstandingResponse {
+  rows: OutstandingRow[];
+  totalOutstanding: number;
+  asOf: IsoDate;
+}
+
+export interface StatementLine {
+  date: IsoDate;
+  documentType: string;
+  documentNumber: string;
+  description: string;
+  debit?: number;
+  credit?: number;
+  runningBalance: number;
+}
+
+export interface StatementResponse {
+  customerId: string;
+  customerName: string;
+  from: IsoDate;
+  to: IsoDate;
+  openingBalance: number;
+  lines: StatementLine[];
+  closingBalance: number;
+}
+
+export interface DispatchLineInput {
+  productId: string;
+  grade: QualityGrade;
+  quantity: number;
+  unitRate?: number | null;
+}
+
+export interface CreateDispatchRequest {
+  customerId: string;
+  dispatchDate: IsoDate;
+  lines: DispatchLineInput[];
+  vehicleNumber?: string | null;
+  notes?: string | null;
+}
+
+export interface DispatchLine {
+  lineNumber: number;
+  productId: string;
+  productCode: string;
+  productName: string;
+  grade: QualityGrade;
+  quantity: number;
+  unitRate: number;
+  lineAmount: number;
+  stockAfter: number;
+}
+
+export interface Dispatch {
+  id: string;
+  dispatchNumber: string;
+  customerId: string;
+  customerName: string;
+  dispatchDate: IsoDate;
+  lines: DispatchLine[];
+  totalAmount: number;
+  customerBalanceAfter: number;
+  vehicleNumber?: string;
+  notes?: string;
+  status: DocumentStatus;
+  enteredBy: string;
+  createdAt: IsoTimestamp;
+  warnings: string[];
+}
+
+export interface CreatePaymentRequest {
+  customerId: string;
+  paymentDate: IsoDate;
+  amount: number;
+  method: PaymentMethod;
+  reference?: string | null;
+  notes?: string | null;
+}
+
+export interface Payment {
+  id: string;
+  paymentNumber: string;
+  customerId: string;
+  customerName: string;
+  paymentDate: IsoDate;
+  amount: number;
+  method: PaymentMethod;
+  reference?: string;
+  customerBalanceAfter: number;
+  status: DocumentStatus;
+  enteredBy: string;
+  createdAt: IsoTimestamp;
+  warnings: string[];
+}

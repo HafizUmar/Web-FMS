@@ -41,6 +41,24 @@ export const routes: Routes = [
           import('./features/stock/stock-page').then((m) => m.StockPageComponent),
       },
       {
+        path: 'customers',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/sales/customers-page').then((m) => m.CustomersPageComponent),
+      },
+      {
+        path: 'dispatches',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/sales/dispatches-page').then((m) => m.DispatchesPageComponent),
+      },
+      {
+        path: 'payments',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/sales/payments-page').then((m) => m.PaymentsPageComponent),
+      },
+      {
         path: 'change-password',
         loadComponent: () =>
           import('./features/auth/change-password').then((m) => m.ChangePasswordComponent),
