@@ -1,0 +1,39 @@
+import { Routes } from '@angular/router';
+import { requiresAuthentication, requiresPermission } from './core/auth.guard';
+import { ShellComponent } from './layout/shell';
+
+/**
+ * Everything except the login page sits behind the shell and an authentication guard.
+ * Pages needing a specific policy carry their own guard as well, so a typed URL is
+ * refused exactly as the nav would have hidden it.
+ */
+export const routes: Routes = [
+  {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login').then((m) => m.LoginComponent),
+  },
+  {
+    path: '',
+    component: ShellComponent,
+    canActivate: [requiresAuthentication],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard-page').then((m) => m.DashboardPageComponent),
+      },
+      {
+        path: 'products',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/products/products-page').then((m) => m.ProductsPageComponent),
+      },
+      {
+        path: 'change-password',
+        loadComponent: () =>
+          import('./features/auth/change-password').then((m) => m.ChangePasswordComponent),
+      },
+    ],
+  },
+  { path: '**', redirectTo: '' },
+];

@@ -22,4 +22,23 @@
     <ProjectReference Include="..\CrockeryFactory.Application\CrockeryFactory.Application.csproj" />
   </ItemGroup>
 
+  <!--
+    The Angular client is built into wwwroot on publish, so `dotnet publish` produces one
+    self-contained thing to copy to the factory server. Deliberately NOT wired into
+    `dotnet build`: an npm build on every inner-loop compile would make the backend loop
+    several seconds slower for no benefit, and `ng serve` is what you use while working on
+    the client anyway.
+  -->
+  <PropertyGroup>
+    <ClientProject>$(MSBuildThisFileDirectory)..\CrockeryFactory.Client</ClientProject>
+  </PropertyGroup>
+
+  <Target Name="BuildAngularClient" BeforeTargets="Publish" Condition="'$(SkipClientBuild)' != 'true'">
+    <Message Importance="high" Text="Installing client dependencies..." Condition="!Exists('$(ClientProject)\node_modules')" />
+    <Exec WorkingDirectory="$(ClientProject)" Command="npm ci" Condition="!Exists('$(ClientProject)\node_modules')" />
+
+    <Message Importance="high" Text="Building Angular client into wwwroot..." />
+    <Exec WorkingDirectory="$(ClientProject)" Command="npm run build -- --configuration production" />
+  </Target>
+
 </Project>

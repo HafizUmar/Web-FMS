@@ -1,0 +1,53 @@
+// Font files are registered in angular.json's styles array rather than imported here,
+// because Sass cannot namespace a stylesheet named 300.css. They are bundled rather than
+// fetched from Google: the factory runs on an isolated LAN with no route to
+// fonts.googleapis.com, and when that fetch fails Material icons render as their raw
+// ligature text - 'more_vert' instead of the glyph - on every screen.
+
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: -1,
+  ));
+}
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background: #fafafa;
+}
+
+/* Material's default form-field spacing is generous for a data-entry screen a clerk
+   uses forty times a day. Tighten it once, here, rather than per component. */
+.mat-mdc-form-field { width: 100%; }
+
+/* Angular Material v21 does not set an icon font on mat-icon - it inherits the body
+   font, so a ligature like `more_vert` renders as the literal text "more_vert" on every
+   screen. This is what the font's own .material-icons class does, applied to the element
+   Material actually renders. */
+mat-icon.mat-icon {
+  font-family: 'Material Icons', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
+}
+
+/* An icon supplied as SVG must not be given a text font. */
+mat-icon.mat-icon[data-mat-icon-type='svg'] { font-family: inherit; }

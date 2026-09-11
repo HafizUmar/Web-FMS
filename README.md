@@ -27,6 +27,7 @@ a price never rewrites a bill that has already gone out of the gate.
 | `src/CrockeryFactory.Application` | Services, DTOs, validation and the business rules |
 | `src/CrockeryFactory.Web` | Controllers, authentication, error mapping, and the single migration history under `Data/Migrations` |
 | `tests/CrockeryFactory.UnitTests` | Value-object behaviour, mapping guards, session and policy rules |
+| `src/CrockeryFactory.Client` | Angular 21 client, built into the host's `wwwroot` |
 | `src/CrockeryFactory.DevSeeder` | Development data generator, excluded from the release build |
 | `tests/CrockeryFactory.IntegrationTests` | The API against a real SQL Server |
 
@@ -246,10 +247,48 @@ means here (clay and glaze only, or a loaded rate including fuel and labour). Ra
 open item rather than guessed at. `RATE_BELOW_LIST` is implemented and warns at half the
 list rate.
 
+## The client
+
+Angular 21 with Angular Material, in `src/CrockeryFactory.Client`, built into
+`src/CrockeryFactory.Web/wwwroot` and served by the same host.
+
+**Same-origin is a requirement, not a preference.** The session cookie is
+`SameSite=Strict`, so a client on another origin would never have it sent. In development
+the Angular dev server proxies `/api` to the backend, which keeps the browser on one
+origin; in production the built client is served by the host itself. That also means one
+thing to deploy to the factory.
+
+Fonts are bundled rather than fetched from Google. The factory runs on an isolated LAN
+with no route to `fonts.googleapis.com`, and when that fetch fails every Material icon
+renders as its raw ligature text.
+
+```bash
+cd src/CrockeryFactory.Client
+npm install          # .npmrc sets legacy-peer-deps - see the note in that file
+npm start            # dev server on :4200, proxying /api to :5150
+```
+
+Run the backend on `:5150` at the same time. Work on the client through `:4200` for hot
+reload; everything else goes through `:5150`.
+
+`dotnet publish` builds the client into `wwwroot` automatically, so a deployment is one
+command. `dotnet build` deliberately does not — an npm build on every backend compile
+would slow the inner loop for no benefit. Pass `-p:SkipClientBuild=true` to publish
+without it.
+
+**Node 20.19+, 22.12+ or 24+** is required (Angular 21's floor).
+
+### What is built
+
+Stage 1 of the client is complete: the application shell, authentication, routing and
+guards, the error model, paging, and **Products** end to end — list with search and
+paging, create, edit with ETag concurrency, price changes, and deactivate. Production,
+Stock, Dispatches, Customers, Payments, Reports and the administration screens follow in
+later stages; their menu entries are present and their pages are not yet built.
+
 ## Trying it out
 
-There is **no user interface** — this repository is the backend and a written
-specification for a frontend. To exercise the API, use Swagger UI.
+To exercise the API directly rather than through the client, use Swagger UI.
 
 **Step 1 — point it at your SQL Server.** Edit
 `src/CrockeryFactory.Web/appsettings.json`. The shipped default is a local SQL Express
@@ -312,7 +351,7 @@ was created there — that is the whole reason the line exists. Fix the connecti
 If no connection string can be found at all, the command fails with an explanation rather
 than quietly defaulting to LocalDB.
 
-Then open **`https://localhost:7150/swagger`** (or `http://localhost:5150/swagger`).
+Then open **`https://localhost:7150/`** for the client, or **`/swagger`** for the API.
 
 Sign in first — everything except `/health` and `/auth/login` requires a session:
 
