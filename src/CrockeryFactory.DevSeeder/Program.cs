@@ -54,6 +54,10 @@ if (!await db.Database.CanConnectAsync())
     return 1;
 }
 
+// Logins first, so that a database seeded with transactions is one somebody can actually
+// sign in to and look at. Existing accounts are left alone.
+var seededUsers = await new UserSeeder(db).SeedAsync();
+
 // The last and most important guard: a database with a dispatch in it is somebody's
 // records, whatever the environment variable says.
 if (await db.Dispatches.AnyAsync())
@@ -69,6 +73,8 @@ if (await db.Products.AnyAsync())
         "Refusing to run: this database already contains products. Seed only an empty database.");
     return 1;
 }
+
+PrintLogins(seededUsers);
 
 var to = DateOnly.FromDateTime(DateTime.Now);
 var from = to.AddMonths(-options.Months);
@@ -93,7 +99,22 @@ Console.WriteLine($"""
     they agree with the ledger by construction. Verify with POST /api/v1/admin/rebuild-stock-balances.
     """);
 
+PrintLogins(seededUsers);
+
 return 0;
+
+static void PrintLogins(IReadOnlyList<(string UserName, string Role)> users)
+{
+    if (users.Count == 0)
+    {
+        Console.WriteLine("Logins: already present, left unchanged.");
+        return;
+    }
+
+    Console.WriteLine("\nSign in with any of these (development only):\n");
+    foreach (var (userName, role) in users)
+        Console.WriteLine($"  {userName,-8} {role,-14} password: {UserSeeder.DevPassword}");
+}
 
 /// <summary>
 /// Attributes seeded rows to the system account. The seeder runs without an HTTP
