@@ -1,4 +1,7 @@
 using CrockeryFactory.Persistence;
+using CrockeryFactory.Shared.Constants;
+using CrockeryFactory.Domain.Enums;
+using CrockeryFactory.Modules.Staff.Entities;
 using CrockeryFactory.Shared.Authorization;
 using CrockeryFactory.Shared.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -64,6 +67,35 @@ public sealed class FactoryApiFixture : WebApplicationFactory<Program>, IAsyncLi
     /// ignores the scheme; without it every authenticated test fails as unauthenticated
     /// for a reason that has nothing to do with the code under test.
     /// </summary>
+    /// <summary>
+    /// Writes attendance straight to the database, for a day the API would rightly refuse
+    /// as too far back. Used only to set up an older week worth running payroll against -
+    /// the backdating rule is itself covered by a test that goes through the endpoint.
+    /// </summary>
+    public async Task SeedAttendanceAsync(Guid employeeId, DateOnly date, AttendanceStatus status)
+    {
+        using var scope = Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<FactoryDbContext>();
+
+        var already = await db.AttendanceRecords
+            .AnyAsync(a => a.EmployeeId == employeeId && a.AttendanceDate == date);
+
+        if (already) return;
+
+        db.AttendanceRecords.Add(new AttendanceRecord
+        {
+            Id = Guid.NewGuid(),
+            EmployeeId = employeeId,
+            AttendanceDate = date,
+            Status = status,
+            OvertimeHours = 0m,
+            CreatedAt = DateTime.UtcNow,
+            CreatedByUserId = SeedConstants.SystemUserId
+        });
+
+        await db.SaveChangesAsync();
+    }
+
     public HttpClient CreateApiClient() => CreateClient(new WebApplicationFactoryClientOptions
     {
         BaseAddress = new Uri("https://localhost"),

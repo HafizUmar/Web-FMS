@@ -33,4 +33,12 @@ public static class SettingKeys
 
     /// <summary>Loss percentage above which a production entry returns a warning.</summary>
     public const string ProductionLossWarningPercent = "Production.LossWarningPercent";
+
+    // Staff. Overtime is paid from the daily rate rather than a separate hourly one:
+    // a daily-wage factory agrees one number per man, and deriving the hour from it
+    // means a rise does not have to be entered twice.
+    public const string PayrollStandardHours = "Payroll.StandardHoursPerDay";
+    public const string PayrollOvertimeMultiplier = "Payroll.OvertimeMultiplier";
+    public const string DocumentPrefixPayroll = "Document.Prefix.Payroll";
+    public const string BackdateDaysAttendance = "Backdate.Days.Attendance";
 }

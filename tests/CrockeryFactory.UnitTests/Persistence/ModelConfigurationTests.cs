@@ -56,6 +56,11 @@ public class ModelConfigurationTests
     [InlineData("Dispatch", "sales", "Dispatches")]
     [InlineData("DispatchLine", "sales", "DispatchLines")]
     [InlineData("Payment", "sales", "Payments")]
+    [InlineData("Employee", "staff", "Employees")]
+    [InlineData("EmployeeWageRate", "staff", "EmployeeWageRates")]
+    [InlineData("AttendanceRecord", "staff", "AttendanceRecords")]
+    [InlineData("PayrollRun", "staff", "PayrollRuns")]
+    [InlineData("PayrollLine", "staff", "PayrollLines")]
     [InlineData("ReasonCode", "shared", "ReasonCodes")]
     [InlineData("FactorySetting", "shared", "FactorySettings")]
     [InlineData("AuditEntry", "shared", "AuditEntries")]
@@ -133,6 +138,9 @@ public class ModelConfigurationTests
     [InlineData("Customer")]
     [InlineData("Dispatch")]
     [InlineData("Payment")]
+    [InlineData("Employee")]
+    [InlineData("AttendanceRecord")]
+    [InlineData("PayrollRun")]
     public void Everything_two_users_could_touch_has_a_concurrency_token(string clrName)
     {
         BuildModel().GetEntityTypes()
@@ -147,7 +155,7 @@ public class ModelConfigurationTests
         var model = BuildDesignTimeModel();
 
         Seeded(model, "ReasonCode").Should().Be(18);
-        Seeded(model, "FactorySetting").Should().Be(14);
+        Seeded(model, "FactorySetting").Should().Be(18);
         Seeded(model, "AppRole").Should().Be(3);
         Seeded(model, "AppUser").Should().Be(1);
 

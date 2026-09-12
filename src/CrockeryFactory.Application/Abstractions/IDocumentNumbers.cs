@@ -17,5 +17,6 @@ public enum DocumentSeries
     Dispatch,
     ProductionEntry,
     Payment,
-    StockAdjustment
+    StockAdjustment,
+    PayrollRun
 }

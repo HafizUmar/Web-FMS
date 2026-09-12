@@ -31,5 +31,6 @@ public static class ModuleNamespaces
     public const string Stock = ".Stock.";
     public const string Production = ".Production.";
     public const string Sales = ".Sales.";
+    public const string Staff = ".Staff.";
     public const string Shared = ".Shared.";
 }

@@ -16,6 +16,9 @@ public interface IFactorySettings
 
     Task<int> GetIntAsync(string key, int fallback, CancellationToken ct = default);
 
+    /// <summary>For rates and multipliers, where a whole number would be the wrong type.</summary>
+    Task<decimal> GetDecimalAsync(string key, decimal fallback, CancellationToken ct = default);
+
     /// <summary>Grades the factory actually sorts to. A grade outside this set is rejected.</summary>
     Task<IReadOnlySet<QualityGrade>> GetEnabledGradesAsync(CancellationToken ct = default);
 

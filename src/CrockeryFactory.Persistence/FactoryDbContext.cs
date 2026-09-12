@@ -4,6 +4,7 @@ using CrockeryFactory.Domain.ValueObjects;
 using CrockeryFactory.Modules.Catalogue.Entities;
 using CrockeryFactory.Modules.Production.Entities;
 using CrockeryFactory.Modules.Sales.Entities;
+using CrockeryFactory.Modules.Staff.Entities;
 using CrockeryFactory.Modules.Stock.Entities;
 using CrockeryFactory.Persistence.Converters;
 using CrockeryFactory.Shared.Entities;
@@ -51,6 +52,13 @@ public class FactoryDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<DispatchLine> DispatchLines => Set<DispatchLine>();
     public DbSet<Payment> Payments => Set<Payment>();
 
+    // Staff
+    public DbSet<Employee> Employees => Set<Employee>();
+    public DbSet<EmployeeWageRate> EmployeeWageRates => Set<EmployeeWageRate>();
+    public DbSet<AttendanceRecord> AttendanceRecords => Set<AttendanceRecord>();
+    public DbSet<PayrollRun> PayrollRuns => Set<PayrollRun>();
+    public DbSet<PayrollLine> PayrollLines => Set<PayrollLine>();
+
     // Shared
     public DbSet<ReasonCode> ReasonCodes => Set<ReasonCode>();
     public DbSet<FactorySetting> FactorySettings => Set<FactorySetting>();
@@ -70,6 +78,7 @@ public class FactoryDbContext : IdentityDbContext<AppUser, AppRole, Guid>
         ApplyModule(b, assembly, ModuleNamespaces.Stock);
         ApplyModule(b, assembly, ModuleNamespaces.Production);
         ApplyModule(b, assembly, ModuleNamespaces.Sales);
+        ApplyModule(b, assembly, ModuleNamespaces.Staff);
         ApplyModule(b, assembly, ModuleNamespaces.Shared);
     }
 

@@ -69,6 +69,10 @@ internal static class SeedData
         Setting(SettingKeys.DocumentPrefixProduction, "P", "Production entry number prefix."),
         Setting(SettingKeys.DocumentPrefixPayment,    "R", "Payment receipt number prefix."),
         Setting(SettingKeys.DocumentPrefixAdjustment, "A", "Stock adjustment number prefix."),
+        Setting(SettingKeys.DocumentPrefixPayroll,    "W", "Payroll run number prefix."),
+        Setting(SettingKeys.PayrollStandardHours,     "8", "Hours in a standard working day, used to price an overtime hour from the daily wage."),
+        Setting(SettingKeys.PayrollOvertimeMultiplier,"1.5", "An overtime hour is paid this many times a normal hour."),
+        Setting(SettingKeys.BackdateDaysAttendance,   "7", "Days attendance may be marked or corrected in the past."),
 
         // BE-5: backdating windows. Held here rather than in code because the right
         // answer depends on how late the factory's paper slips actually arrive.

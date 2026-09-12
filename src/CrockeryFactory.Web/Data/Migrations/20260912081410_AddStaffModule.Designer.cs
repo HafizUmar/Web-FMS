@@ -4,6 +4,7 @@ using CrockeryFactory.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrockeryFactory.Web.Data.Migrations
 {
     [DbContext(typeof(FactoryDbContext))]
-    partial class FactoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260912081410_AddStaffModule")]
+    partial class AddStaffModule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

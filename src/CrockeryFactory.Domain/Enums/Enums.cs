@@ -54,3 +54,15 @@ public enum ReasonCodeType
     SalesReturn,
     DispatchCancellation
 }
+
+/// <summary>
+/// How a worker's day counted. The value is deliberately the fraction of a day's wage it
+/// earns, times one hundred, so "half day pays half" is in the type rather than only in
+/// the payroll code.
+/// </summary>
+public enum AttendanceStatus
+{
+    Absent = 0,
+    HalfDay = 50,
+    Present = 100
+}

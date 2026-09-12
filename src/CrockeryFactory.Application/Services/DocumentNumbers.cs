@@ -62,6 +62,10 @@ public sealed class DocumentNumbers : IDocumentNumbers
                 .Where(a => a.AdjustmentNumber.StartsWith(stem))
                 .Select(a => a.AdjustmentNumber).ToListAsync(ct),
 
+            DocumentSeries.PayrollRun => await _db.PayrollRuns
+                .Where(r => r.RunNumber.StartsWith(stem))
+                .Select(r => r.RunNumber).ToListAsync(ct),
+
             _ => throw new ArgumentOutOfRangeException(nameof(series), series, "Unknown document series.")
         };
 
@@ -82,6 +86,7 @@ public sealed class DocumentNumbers : IDocumentNumbers
         DocumentSeries.ProductionEntry => SettingKeys.DocumentPrefixProduction,
         DocumentSeries.Payment => SettingKeys.DocumentPrefixPayment,
         DocumentSeries.StockAdjustment => SettingKeys.DocumentPrefixAdjustment,
+        DocumentSeries.PayrollRun => SettingKeys.DocumentPrefixPayroll,
         _ => throw new ArgumentOutOfRangeException(nameof(series), series, "Unknown document series.")
     };
 
@@ -91,6 +96,7 @@ public sealed class DocumentNumbers : IDocumentNumbers
         DocumentSeries.ProductionEntry => "P",
         DocumentSeries.Payment => "R",
         DocumentSeries.StockAdjustment => "A",
+        DocumentSeries.PayrollRun => "W",
         _ => "X"
     };
 }

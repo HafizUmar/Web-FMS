@@ -53,6 +53,18 @@ public sealed class FactorySettingsProvider : IFactorySettings
         return int.TryParse(raw, out var parsed) ? parsed : fallback;
     }
 
+    public async Task<decimal> GetDecimalAsync(string key, decimal fallback, CancellationToken ct = default)
+    {
+        var raw = await GetStringAsync(key, string.Empty, ct);
+
+        // Invariant culture on purpose: the value is stored as typed into a settings box,
+        // and "1.5" must not become 15 on a machine whose locale uses a comma.
+        return decimal.TryParse(raw, System.Globalization.NumberStyles.Number,
+            System.Globalization.CultureInfo.InvariantCulture, out var parsed)
+            ? parsed
+            : fallback;
+    }
+
     public async Task<IReadOnlySet<QualityGrade>> GetEnabledGradesAsync(CancellationToken ct = default)
     {
         var raw = await GetStringAsync(SettingKeys.EnabledGrades, "1,2", ct);
