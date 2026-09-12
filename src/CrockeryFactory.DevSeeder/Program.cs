@@ -20,8 +20,23 @@ var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
 
 if (!string.Equals(environment, "Development", StringComparison.OrdinalIgnoreCase))
 {
+    // A refusal that does not say how to proceed reads as a broken tool. The usual way to
+    // meet this one is running from a plain terminal, where neither variable is set:
+    // Visual Studio sets ASPNETCORE_ENVIRONMENT from launchSettings, a bare "dotnet run"
+    // sets nothing. The symptom downstream is a database with no logins and a
+    // correct-looking "invalid username or password" at the sign-in screen, which points
+    // nowhere near this message.
     Console.Error.WriteLine(
         $"Refusing to run: DOTNET_ENVIRONMENT is '{environment ?? "not set"}', not 'Development'.");
+    Console.Error.WriteLine();
+    Console.Error.WriteLine(
+        "This tool writes fabricated data, so it runs only when the environment says");
+    Console.Error.WriteLine(
+        "development. Set it for this session, then run the same command again:");
+    Console.Error.WriteLine();
+    Console.Error.WriteLine("  PowerShell   $env:DOTNET_ENVIRONMENT = \"Development\"");
+    Console.Error.WriteLine("  cmd.exe      set DOTNET_ENVIRONMENT=Development");
+    Console.Error.WriteLine("  bash / zsh   export DOTNET_ENVIRONMENT=Development");
     return 1;
 }
 

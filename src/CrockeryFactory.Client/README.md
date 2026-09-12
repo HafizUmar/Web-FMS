@@ -63,7 +63,15 @@ npm run watch
 
 ## Signing in
 
-The development seeder creates three accounts, all with the password `Factory!Pass99`:
+The development seeder creates three accounts. It refuses to run unless the environment
+says development, which a plain terminal does not set, so that has to be set first:
+
+```powershell
+$env:DOTNET_ENVIRONMENT = "Development"
+dotnet run --project src/CrockeryFactory.DevSeeder -- --months 3 --i-understand
+```
+
+All three use the password `Factory!Pass99`:
 
 | Username | Role | Sees |
 |---|---|---|
