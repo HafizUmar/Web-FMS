@@ -132,6 +132,11 @@ Watch it under the **Actions** tab. The workflow builds the Angular client, runs
 tests against a real SQL Server, publishes, deploys, and then polls `/api/v1/health` until
 the site reports healthy.
 
+If steps 1-3 are not done yet, the workflow still builds and tests; it simply skips the
+deploy and writes into the run summary which of the four values is missing. The run stays
+green, because nothing is broken — it is a build that had nowhere to go. Add the values
+and the next push deploys; the workflow itself needs no editing.
+
 Sign in at `https://<appName>.azurewebsites.net` with the bootstrap administrator.
 
 ## 5. Immediately after the first sign-in
