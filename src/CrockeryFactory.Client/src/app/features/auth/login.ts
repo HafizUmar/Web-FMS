@@ -10,6 +10,7 @@ import { AuthService } from '../../core/auth.service';
 import { LookupsService } from '../../core/lookups.service';
 import { ProblemDetails } from '../../core/problem-details';
 import { ErrorBannerComponent } from '../../shared/components/error-banner';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 /**
  * Split layout: the brand panel on the left, the form on the right.
@@ -31,25 +32,25 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
           <span class="panel__mark" aria-hidden="true"><mat-icon>local_fire_department</mat-icon></span>
           <div>
             <h1>Crockery Factory</h1>
-            <p>Management system</p>
+            <p>{{ t('login.tagline') }}</p>
           </div>
         </div>
 
         <ul class="panel__points">
-          <li><mat-icon>inventory_2</mat-icon> Stock by product and grade, from an append-only ledger</li>
-          <li><mat-icon>local_shipping</mat-icon> Dispatches and payments against a running balance</li>
-          <li><mat-icon>insights</mat-icon> Kiln output, losses and outstanding debt at a glance</li>
+          <li><mat-icon>inventory_2</mat-icon> {{ t('login.point.stock') }}</li>
+          <li><mat-icon>local_shipping</mat-icon> {{ t('login.point.sales') }}</li>
+          <li><mat-icon>insights</mat-icon> {{ t('login.point.reports') }}</li>
         </ul>
 
-        <p class="panel__foot">Phase 1 · runs on the factory network</p>
+        <p class="panel__foot">{{ t('login.network_note') }}</p>
       </aside>
 
       <main class="form-side">
         <div class="card">
           @if (busy()) { <mat-progress-bar mode="indeterminate" class="card__bar" /> }
 
-          <h2>Welcome back</h2>
-          <p class="card__sub">Sign in to continue.</p>
+          <h2>{{ t('login.welcome') }}</h2>
+          <p class="card__sub">{{ t('login.subtitle') }}</p>
 
           @if (notice()) {
             <p class="notice" role="status">
@@ -61,16 +62,16 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
 
           <form [formGroup]="form" (ngSubmit)="submit()">
             <mat-form-field appearance="outline">
-              <mat-label>Username</mat-label>
+              <mat-label>{{ t('login.username') }}</mat-label>
               <input matInput formControlName="userName" autocomplete="username" cdkFocusInitial />
               <mat-icon matIconSuffix>person_outline</mat-icon>
               @if (form.controls.userName.touched && form.controls.userName.invalid) {
-                <mat-error>Enter your username</mat-error>
+                <mat-error>{{ t('login.enter_username') }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Password</mat-label>
+              <mat-label>{{ t('login.password') }}</mat-label>
               <input
                 matInput
                 [type]="reveal() ? 'text' : 'password'"
@@ -81,23 +82,23 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
                 matIconSuffix
                 type="button"
                 (click)="reveal.set(!reveal())"
-                [attr.aria-label]="reveal() ? 'Hide password' : 'Show password'">
+                [attr.aria-label]="reveal() ? t('login.hide_password') : t('login.show_password')">
                 <mat-icon>{{ reveal() ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
               @if (form.controls.password.touched && form.controls.password.invalid) {
-                <mat-error>Enter your password</mat-error>
+                <mat-error>{{ t('login.enter_password') }}</mat-error>
               }
             </mat-form-field>
 
             <!-- No trailing icon: Material renders a button's icon before its label
                  whatever the markup order, and "-> Sign in" reads as a back arrow. -->
             <button matButton="filled" color="primary" type="submit" [disabled]="busy()" class="submit">
-              {{ busy() ? 'Signing in…' : 'Sign in' }}
+              {{ busy() ? t('login.submitting') : t('login.submit') }}
             </button>
           </form>
 
           <p class="card__help">
-            Forgotten your password? An administrator can set a new one for you.
+            {{ t('login.forgot') }}
           </p>
         </div>
       </main>
@@ -212,6 +213,7 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
   `,
 })
 export class LoginComponent {
+  protected readonly t = inject(I18nService).t;
   private readonly auth = inject(AuthService);
   private readonly lookups = inject(LookupsService);
   private readonly router = inject(Router);

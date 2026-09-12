@@ -18,6 +18,7 @@ import { HasPermissionDirective } from '../../core/has-permission.directive';
 import { ErrorBannerComponent } from '../../shared/components/error-banner';
 import { DispatchFormComponent } from './dispatch-form';
 import { CancelDialogComponent } from '../production/cancel-dialog';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-dispatches-page',
@@ -29,8 +30,8 @@ import { CancelDialogComponent } from '../production/cancel-dialog';
   template: `
     <header class="page__header">
       <div>
-        <h1>Dispatches</h1>
-        <p class="page__sub">Goods that left the factory, and what they were billed at.</p>
+        <h1>{{ t('disp.title') }}</h1>
+        <p class="page__sub">{{ t('disp.subtitle') }}</p>
       </div>
 
       <button matButton="filled" color="primary" (click)="create()" *appHasPermission="'CanRecordTransactions'">
@@ -171,6 +172,7 @@ import { CancelDialogComponent } from '../production/cancel-dialog';
   `,
 })
 export class DispatchesPageComponent {
+  protected readonly t = inject(I18nService).t;
   private readonly sales = inject(SalesService);
   private readonly lookups = inject(LookupsService);
   private readonly auth = inject(AuthService);

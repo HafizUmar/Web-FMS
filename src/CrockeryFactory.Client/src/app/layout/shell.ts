@@ -7,36 +7,44 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { BidiModule } from '@angular/cdk/bidi';
 import { AuthService } from '../core/auth.service';
 import { LookupsService } from '../core/lookups.service';
 import { ThemeService } from '../core/theme.service';
+import { I18nService } from '../core/i18n/i18n.service';
+import { StringKey } from '../core/i18n/strings';
 import { Permission } from '../core/api.types';
 
 interface NavItem {
   path: string;
-  label: string;
+  /** A translation key, not a label - the rail is rebuilt when the language changes. */
+  label: StringKey;
   icon: string;
   permission: Permission;
-  /** Starts a new group in the rail. The label is a heading above it. */
-  group?: string;
+  /** Starts a new group in the rail. Its heading is a key too. */
+  group?: StringKey;
 }
 
 const NAV: NavItem[] = [
-  { path: '/', label: 'Dashboard', icon: 'dashboard', permission: 'CanViewReports' },
+  { path: '/', label: 'nav.dashboard', icon: 'dashboard', permission: 'CanViewReports' },
 
-  { path: '/production', label: 'Production', icon: 'local_fire_department', permission: 'CanViewReports', group: 'Factory floor' },
-  { path: '/stock', label: 'Stock', icon: 'inventory_2', permission: 'CanViewReports' },
-  { path: '/products', label: 'Products', icon: 'category', permission: 'CanViewReports' },
+  { path: '/production', label: 'nav.production', icon: 'local_fire_department', permission: 'CanViewReports', group: 'nav.group.floor' },
+  { path: '/stock', label: 'nav.stock', icon: 'inventory_2', permission: 'CanViewReports' },
+  { path: '/products', label: 'nav.products', icon: 'category', permission: 'CanViewReports' },
 
-  { path: '/dispatches', label: 'Dispatches', icon: 'local_shipping', permission: 'CanViewReports', group: 'Sales' },
-  { path: '/customers', label: 'Customers', icon: 'groups', permission: 'CanViewReports' },
-  { path: '/payments', label: 'Payments', icon: 'payments', permission: 'CanViewReports' },
-  { path: '/reports', label: 'Reports', icon: 'assessment', permission: 'CanViewReports' },
+  { path: '/dispatches', label: 'nav.dispatches', icon: 'local_shipping', permission: 'CanViewReports', group: 'nav.group.sales' },
+  { path: '/customers', label: 'nav.customers', icon: 'groups', permission: 'CanViewReports' },
+  { path: '/payments', label: 'nav.payments', icon: 'payments', permission: 'CanViewReports' },
+  { path: '/reports', label: 'nav.reports', icon: 'assessment', permission: 'CanViewReports' },
 
-  { path: '/admin/users', label: 'Users', icon: 'manage_accounts', permission: 'CanManageUsers', group: 'Administration' },
-  { path: '/admin/settings', label: 'Settings', icon: 'settings', permission: 'CanManageSettings' },
-  { path: '/admin/reason-codes', label: 'Reason codes', icon: 'list_alt', permission: 'CanViewReports' },
-  { path: '/admin/audit', label: 'Audit', icon: 'history', permission: 'CanViewAudit' },
+  { path: '/employees', label: 'nav.employees', icon: 'badge', permission: 'CanViewReports', group: 'nav.group.staff' },
+  { path: '/attendance', label: 'nav.attendance', icon: 'how_to_reg', permission: 'CanViewReports' },
+  { path: '/payroll', label: 'nav.payroll', icon: 'account_balance_wallet', permission: 'CanViewReports' },
+
+  { path: '/admin/users', label: 'nav.users', icon: 'manage_accounts', permission: 'CanManageUsers', group: 'nav.group.admin' },
+  { path: '/admin/settings', label: 'nav.settings', icon: 'settings', permission: 'CanManageSettings' },
+  { path: '/admin/reason-codes', label: 'nav.reason_codes', icon: 'list_alt', permission: 'CanViewReports' },
+  { path: '/admin/audit', label: 'nav.audit', icon: 'history', permission: 'CanViewAudit' },
 ];
 
 @Component({
@@ -44,9 +52,17 @@ const NAV: NavItem[] = [
   imports: [
     RouterOutlet, RouterLink, RouterLinkActive,
     MatToolbarModule, MatSidenavModule, MatListModule,
-    MatIconModule, MatButtonModule, MatMenuModule, MatTooltipModule,
+    MatIconModule, MatButtonModule, MatMenuModule, MatTooltipModule, BidiModule,
   ],
   template: `
+    <!--
+      The CDK's Directionality reads the document's dir once, at construction, and
+      nothing re-reads it when script changes the attribute. Material's sidenav then
+      keeps its left-hand margins while the rail itself flips right, leaving a dead
+      strip on one side and a clipped table on the other. The [dir] directive is the
+      supported way to tell Material about a direction that changes at runtime.
+    -->
+    <div [dir]="i18n.dir()" class="shell-root">
     <mat-toolbar class="topbar">
       <span class="brand">
         <span class="brand__mark" aria-hidden="true">
@@ -54,22 +70,31 @@ const NAV: NavItem[] = [
         </span>
         <span class="brand__text">
           <strong>{{ factoryName() }}</strong>
-          <small>Factory management</small>
+          <small>{{ t('app.subtitle') }}</small>
         </span>
       </span>
 
       <span class="topbar__spacer"></span>
 
+      <!-- One tap, no reload: the language is a signal, so every string re-renders. -->
+      <button
+        matButton
+        class="topbar__action topbar__lang"
+        (click)="i18n.toggle()"
+        [attr.aria-label]="t('lang.switch_aria')">
+        <span class="topbar__lang-text">{{ t('lang.switch') }}</span>
+      </button>
+
       <button
         matIconButton
         class="topbar__action"
         (click)="theme.toggle()"
-        [matTooltip]="theme.mode() === 'dark' ? 'Switch to light' : 'Switch to dark'"
-        [attr.aria-label]="theme.mode() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'">
+        [matTooltip]="theme.mode() === 'dark' ? t('theme.to_light') : t('theme.to_dark')"
+        [attr.aria-label]="theme.mode() === 'dark' ? t('theme.to_light') : t('theme.to_dark')">
         <mat-icon>{{ theme.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
       </button>
 
-      <button matButton class="account-trigger" [matMenuTriggerFor]="account" aria-label="Account">
+      <button matButton class="account-trigger" [matMenuTriggerFor]="account" [attr.aria-label]="t('account.label')">
         <!--
           The row is declared on a wrapper this template owns. Styling Material's own
           .mdc-button__label does not work: that element comes from Material's template,
@@ -92,10 +117,10 @@ const NAV: NavItem[] = [
           </div>
         </div>
         <button mat-menu-item routerLink="/change-password">
-          <mat-icon>password</mat-icon><span>Change password</span>
+          <mat-icon>password</mat-icon><span>{{ t('account.change_password') }}</span>
         </button>
         <button mat-menu-item (click)="signOut()">
-          <mat-icon>logout</mat-icon><span>Sign out</span>
+          <mat-icon>logout</mat-icon><span>{{ t('account.sign_out') }}</span>
         </button>
       </mat-menu>
     </mat-toolbar>
@@ -104,7 +129,7 @@ const NAV: NavItem[] = [
       <mat-sidenav mode="side" opened class="layout__nav">
         <mat-nav-list>
           @for (item of visibleNav(); track item.path) {
-            @if (item.group) { <h3 class="nav__group">{{ item.group }}</h3> }
+            @if (item.group) { <h3 class="nav__group">{{ t(item.group) }}</h3> }
 
             <a
               mat-list-item
@@ -112,7 +137,7 @@ const NAV: NavItem[] = [
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: item.path === '/' }">
               <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-              <span matListItemTitle>{{ item.label }}</span>
+              <span matListItemTitle>{{ t(item.label) }}</span>
             </a>
           }
         </mat-nav-list>
@@ -122,8 +147,11 @@ const NAV: NavItem[] = [
         <router-outlet />
       </mat-sidenav-content>
     </mat-sidenav-container>
+    </div>
   `,
   styles: `
+    .shell-root { display: block; }
+
     /* One gradient for the whole chrome, so the bar and the rail read as a single
        piece rather than two panels that happen to be adjacent. */
     .topbar {
@@ -156,6 +184,17 @@ const NAV: NavItem[] = [
 
     .topbar__spacer { flex: 1 1 auto; }
     .topbar__action { color: rgba(255, 255, 255, .92); }
+
+    /* A word, not a globe icon: "اردو" says what the button does to a reader of
+       either language, which a flag or a globe does not. */
+    .topbar__lang {
+      min-width: 0 !important;
+      padding: 0 .8rem !important;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 999px !important;
+      height: 36px;
+    }
+    .topbar__lang-text { font-weight: 600; font-size: .9rem; }
 
     .account-trigger {
       color: #fff !important;
@@ -257,6 +296,10 @@ const NAV: NavItem[] = [
 export class ShellComponent {
   readonly auth = inject(AuthService);
   readonly theme = inject(ThemeService);
+  readonly i18n = inject(I18nService);
+
+  /** Held as a property so templates can call t(...) directly. */
+  readonly t = this.i18n.t;
   private readonly lookups = inject(LookupsService);
 
   /**
@@ -298,7 +341,7 @@ export class ShellComponent {
 }
 
 /** The heading an item sits under, whether or not it declares one itself. */
-function headingFor(item: NavItem): string | undefined {
+function headingFor(item: NavItem): StringKey | undefined {
   const index = NAV.indexOf(item);
   for (let i = index; i >= 0; i--) {
     if (NAV[i].group) return NAV[i].group;

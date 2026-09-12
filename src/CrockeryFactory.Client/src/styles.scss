@@ -180,6 +180,73 @@ body {
 }
 
 /* ==========================================================================
+   Urdu and right-to-left
+
+   Two things change when the language does: the writing direction, and the
+   font. Everything else is shared, which is only true because the layout is
+   written with logical properties (inline-start rather than left) wherever a
+   side is meant to follow the text.
+   ========================================================================== */
+
+html[dir='rtl'] {
+  /*
+    Nastaliq is what Urdu readers expect, and it is a sloped script: glyphs
+    descend well below the baseline, so the line-height that suits Roboto clips
+    the tails. Every Urdu surface gets more room rather than a smaller font.
+  */
+  --ur-font: 'Noto Nastaliq Urdu', 'Noto Naskh Arabic', serif;
+
+  font-family: var(--ur-font);
+  line-height: 2;
+}
+
+html[dir='rtl'] body,
+html[dir='rtl'] .mat-mdc-button-base,
+html[dir='rtl'] .mat-mdc-form-field,
+html[dir='rtl'] .mat-mdc-cell,
+html[dir='rtl'] .mat-mdc-header-cell,
+html[dir='rtl'] .mat-mdc-menu-item,
+html[dir='rtl'] .mat-mdc-dialog-container,
+html[dir='rtl'] .mat-mdc-tab {
+  font-family: var(--ur-font);
+}
+
+/* Rows need the extra height too, or descenders collide with the rule below. */
+html[dir='rtl'] .mat-mdc-cell,
+html[dir='rtl'] .mat-mdc-header-cell {
+  line-height: 2.1;
+  padding-top: .35rem;
+  padding-bottom: .35rem;
+}
+
+/*
+  Numbers, codes and document identifiers stay in the Latin face and stay
+  left-to-right even inside an Urdu sentence. A quantity set in Nastaliq at
+  table size is genuinely hard to read, and a reversed document number is wrong
+  rather than merely ugly.
+*/
+html[dir='rtl'] .figure,
+html[dir='rtl'] .num,
+html[dir='rtl'] code,
+html[dir='rtl'] input[type='number'],
+html[dir='rtl'] .ltr {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  direction: ltr;
+  unicode-bidi: isolate;
+  line-height: 1.5;
+}
+
+/* A numeric column is aligned to the column edge, not to the reading
+   direction, so it flips with the table. */
+html[dir='rtl'] .num { text-align: left; }
+
+/* Material flips the sidenav itself; the border has to move with it. */
+html[dir='rtl'] .layout__nav {
+  border-right: none;
+  border-left: 1px solid var(--line);
+}
+
+/* ==========================================================================
    Shared page furniture
 
    Every screen has a title, a subtitle and a card of content. Defining that

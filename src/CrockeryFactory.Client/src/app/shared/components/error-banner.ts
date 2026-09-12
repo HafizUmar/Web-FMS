@@ -1,6 +1,8 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ProblemDetails } from '../../core/problem-details';
+import { I18nService } from '../../core/i18n/i18n.service';
+import { STRINGS, StringKey } from '../../core/i18n/strings';
 
 /**
  * Shows a server error the way the backend intends: `detail` verbatim, because it is
@@ -17,10 +19,10 @@ import { ProblemDetails } from '../../core/problem-details';
       <div class="banner" [class.banner--warn]="p.status === 422" role="alert">
         <mat-icon>{{ p.status === 422 ? 'report_problem' : 'error_outline' }}</mat-icon>
         <div class="banner__body">
-          <strong>{{ p.title }}</strong>
-          <p>{{ p.detail }}</p>
+          <strong>{{ title() }}</strong>
+          <p>{{ message() }}</p>
           @if (showTrace()) {
-            <small>Reference {{ p.traceId }}</small>
+            <small>{{ t('err.reference', { id: p.traceId ?? '' }) }}</small>
           }
         </div>
       </div>
@@ -43,7 +45,42 @@ import { ProblemDetails } from '../../core/problem-details';
   `,
 })
 export class ErrorBannerComponent {
+  private readonly i18n = inject(I18nService);
+  protected readonly t = this.i18n.t;
+
   readonly problem = input<ProblemDetails | null>(null);
+
+  /**
+   * `detail` is written for a clerk, but it is written in English on the server. `code`
+   * is the stable identity, so the common ones are translated here and anything without
+   * a translation falls back to the server's own sentence rather than to nothing.
+   *
+   * This is a client-side half of the job: an error the server words for a specific
+   * product or quantity still arrives in English. Translating those properly means
+   * translating them where they are written, in the API.
+   */
+  protected readonly message = computed(() => {
+    const p = this.problem();
+    if (!p) return '';
+
+    const key = `err.${p.code}` as StringKey;
+    return key in STRINGS ? this.i18n.t(key) : p.detail;
+  });
+
+  /**
+   * The title follows the message's language. Leaving the server's English title above a
+   * translated body produced a banner that was half in each language, which reads worse
+   * than either one alone.
+   */
+  protected readonly title = computed(() => {
+    const p = this.problem();
+    if (!p) return '';
+
+    if (p.code === 'NETWORK_ERROR') return this.i18n.t('err.unreachable');
+
+    const translated = `err.${p.code}` as StringKey;
+    return translated in STRINGS ? this.i18n.t('err.title') : p.title;
+  });
 
   /** Only useful where the message itself is not - i.e. a 500. */
   readonly showTrace = computed(() => {

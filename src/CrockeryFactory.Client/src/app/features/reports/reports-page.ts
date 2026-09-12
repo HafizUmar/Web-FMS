@@ -23,6 +23,7 @@ import { LookupsService } from '../../core/lookups.service';
 import { ProblemDetails } from '../../core/problem-details';
 import { money, quantity, todayIso, toIsoDate } from '../../core/formatting';
 import { ErrorBannerComponent } from '../../shared/components/error-banner';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 /**
  * RP-01, RP-02, RP-04 and RP-06 behind one tab group.
@@ -44,8 +45,8 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
   template: `
     <header class="page__header">
       <div>
-        <h1>Reports</h1>
-        <p class="page__sub">Stock, debt, kiln output and sales, for any period.</p>
+        <h1>{{ t('rep.title') }}</h1>
+        <p class="page__sub">{{ t('rep.subtitle') }}</p>
       </div>
     </header>
 
@@ -54,11 +55,11 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
 
     <mat-tab-group [selectedIndex]="tab()" (selectedIndexChange)="openTab($event)" animationDuration="0ms">
       <!-- RP-01 -->
-      <mat-tab label="Daily stock">
+      <mat-tab [label]="t('rep.tab.daily_stock')">
         <div class="tab">
           <div class="filters">
             <mat-form-field appearance="outline" class="filters__date">
-              <mat-label>Date</mat-label>
+              <mat-label>{{ t('common.date') }}</mat-label>
               <input matInput [matDatepicker]="dailyPicker" [formControl]="dailyDate" [max]="today" />
               <mat-datepicker-toggle matIconSuffix [for]="dailyPicker" />
               <mat-datepicker #dailyPicker />
@@ -138,7 +139,7 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
       </mat-tab>
 
       <!-- RP-02 -->
-      <mat-tab label="Outstanding">
+      <mat-tab [label]="t('rep.tab.outstanding')">
         <div class="tab">
           <div class="filters">
             <p class="lede lede--inline">
@@ -216,25 +217,25 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
       </mat-tab>
 
       <!-- RP-04 -->
-      <mat-tab label="Production">
+      <mat-tab [label]="t('rep.tab.production')">
         <div class="tab">
           <div class="filters">
             <mat-form-field appearance="outline" class="filters__date">
-              <mat-label>From</mat-label>
+              <mat-label>{{ t('common.from') }}</mat-label>
               <input matInput [matDatepicker]="prodFrom" [formControl]="productionFrom" [max]="today" />
               <mat-datepicker-toggle matIconSuffix [for]="prodFrom" />
               <mat-datepicker #prodFrom />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="filters__date">
-              <mat-label>To</mat-label>
+              <mat-label>{{ t('common.to') }}</mat-label>
               <input matInput [matDatepicker]="prodTo" [formControl]="productionTo" [max]="today" />
               <mat-datepicker-toggle matIconSuffix [for]="prodTo" />
               <mat-datepicker #prodTo />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="filters__group">
-              <mat-label>Group by</mat-label>
+              <mat-label>{{ t('rep.group_by') }}</mat-label>
               <mat-select [formControl]="productionGroupBy">
                 <mat-option value="Product">Product</mat-option>
                 <mat-option value="Day">Day</mat-option>
@@ -337,25 +338,25 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
       </mat-tab>
 
       <!-- RP-06 -->
-      <mat-tab label="Sales">
+      <mat-tab [label]="t('rep.tab.sales')">
         <div class="tab">
           <div class="filters">
             <mat-form-field appearance="outline" class="filters__date">
-              <mat-label>From</mat-label>
+              <mat-label>{{ t('common.from') }}</mat-label>
               <input matInput [matDatepicker]="salesFromPicker" [formControl]="salesFrom" [max]="today" />
               <mat-datepicker-toggle matIconSuffix [for]="salesFromPicker" />
               <mat-datepicker #salesFromPicker />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="filters__date">
-              <mat-label>To</mat-label>
+              <mat-label>{{ t('common.to') }}</mat-label>
               <input matInput [matDatepicker]="salesToPicker" [formControl]="salesTo" [max]="today" />
               <mat-datepicker-toggle matIconSuffix [for]="salesToPicker" />
               <mat-datepicker #salesToPicker />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="filters__group">
-              <mat-label>Group by</mat-label>
+              <mat-label>{{ t('rep.group_by') }}</mat-label>
               <mat-select [formControl]="salesGroupBy">
                 <mat-option value="Customer">Customer</mat-option>
                 <mat-option value="Product">Product</mat-option>
@@ -430,10 +431,10 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
           <span class="exports__reason" role="note">{{ exports().reason }}</span>
         }
         <button matButton [disabled]="!exports().available" (click)="download('pdf')">
-          <mat-icon>picture_as_pdf</mat-icon> PDF
+          <mat-icon>picture_as_pdf</mat-icon> {{ t('rep.pdf') }}
         </button>
         <button matButton [disabled]="!exports().available" (click)="download('xlsx')">
-          <mat-icon>table_view</mat-icon> Excel
+          <mat-icon>table_view</mat-icon> {{ t('rep.excel') }}
         </button>
       </div>
     </ng-template>
@@ -473,6 +474,7 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
   `,
 })
 export class ReportsPageComponent {
+  protected readonly t = inject(I18nService).t;
   private readonly reports = inject(ReportsService);
   private readonly productionApi = inject(ProductionService);
   private readonly lookups = inject(LookupsService);

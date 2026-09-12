@@ -24,6 +24,7 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog';
 import { ProductFormComponent, ProductFormData } from './product-form';
 import { PricesFormComponent } from './prices-form';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-products-page',
@@ -35,7 +36,7 @@ import { PricesFormComponent } from './prices-form';
   template: `
     <header class="page__header">
       <div>
-        <h1>Products</h1>
+        <h1>{{ t('prodcat.title') }}</h1>
         <p class="page__sub">The catalogue, with current prices and what is in the godown.</p>
       </div>
 
@@ -174,6 +175,7 @@ import { PricesFormComponent } from './prices-form';
   `,
 })
 export class ProductsPageComponent {
+  protected readonly t = inject(I18nService).t;
   private readonly products = inject(ProductsService);
   private readonly auth = inject(AuthService);
   private readonly dialog = inject(MatDialog);

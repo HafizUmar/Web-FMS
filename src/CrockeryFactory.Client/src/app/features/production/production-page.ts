@@ -18,6 +18,7 @@ import { HasPermissionDirective } from '../../core/has-permission.directive';
 import { ErrorBannerComponent } from '../../shared/components/error-banner';
 import { ProductionFormComponent } from './production-form';
 import { CancelDialogComponent } from './cancel-dialog';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-production-page',
@@ -29,7 +30,7 @@ import { CancelDialogComponent } from './cancel-dialog';
   template: `
     <header class="page__header">
       <div>
-        <h1>Production</h1>
+        <h1>{{ t('prod.title') }}</h1>
         <p class="page__sub">What came off the kiln, and what was lost.</p>
       </div>
 
@@ -156,6 +157,7 @@ import { CancelDialogComponent } from './cancel-dialog';
   `,
 })
 export class ProductionPageComponent {
+  protected readonly t = inject(I18nService).t;
   private readonly production = inject(ProductionService);
   private readonly lookups = inject(LookupsService);
   private readonly auth = inject(AuthService);

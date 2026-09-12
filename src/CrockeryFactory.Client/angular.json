@@ -33,6 +33,8 @@
               "@fontsource/roboto/300.css",
               "@fontsource/roboto/400.css",
               "@fontsource/roboto/500.css",
+              "@fontsource/noto-nastaliq-urdu/400.css",
+              "@fontsource/noto-nastaliq-urdu/600.css",
               "@fontsource/material-icons/index.css",
               "src/styles.scss"
             ],

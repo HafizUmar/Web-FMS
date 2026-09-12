@@ -17,6 +17,7 @@ import { HasPermissionDirective } from '../../core/has-permission.directive';
 import { ErrorBannerComponent } from '../../shared/components/error-banner';
 import { PaymentFormComponent } from './payment-form';
 import { CancelDialogComponent } from '../production/cancel-dialog';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-payments-page',
@@ -28,7 +29,7 @@ import { CancelDialogComponent } from '../production/cancel-dialog';
   template: `
     <header class="page__header">
       <div>
-        <h1>Payments</h1>
+        <h1>{{ t('pay.title') }}</h1>
         <p class="page__sub">Money received against customer accounts.</p>
       </div>
 
@@ -134,6 +135,7 @@ import { CancelDialogComponent } from '../production/cancel-dialog';
   `,
 })
 export class PaymentsPageComponent {
+  protected readonly t = inject(I18nService).t;
   private readonly sales = inject(SalesService);
   private readonly auth = inject(AuthService);
   private readonly dialog = inject(MatDialog);

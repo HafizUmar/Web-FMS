@@ -23,6 +23,7 @@ import { HasPermissionDirective } from '../../core/has-permission.directive';
 import { ErrorBannerComponent } from '../../shared/components/error-banner';
 import { AdjustmentFormComponent } from './adjustment-form';
 import { MovementsDialogComponent } from './movements-dialog';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-stock-page',
@@ -35,39 +36,39 @@ import { MovementsDialogComponent } from './movements-dialog';
   template: `
     <header class="page__header">
       <div>
-        <h1>Stock</h1>
-        <p class="page__sub">What is in the godown, per product and grade.</p>
+        <h1>{{ t('stock.title') }}</h1>
+        <p class="page__sub">{{ t('stock.subtitle') }}</p>
       </div>
 
       <button matButton="filled" color="primary" (click)="adjust()" *appHasPermission="'CanAdjustStock'">
-        <mat-icon>tune</mat-icon> Adjust stock
+        <mat-icon>tune</mat-icon> {{ t('stock.adjust') }}
       </button>
     </header>
 
     <div class="filters">
       <mat-form-field appearance="outline" class="filters__search">
-        <mat-label>Search</mat-label>
+        <mat-label>{{ t('common.search') }}</mat-label>
         <input matInput [formControl]="search" placeholder="Code or name" />
         <mat-icon matIconSuffix>search</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="filters__grade">
-        <mat-label>Grade</mat-label>
+        <mat-label>{{ t('stock.grade') }}</mat-label>
         <mat-select [formControl]="grade">
-          <mat-option [value]="null">All grades</mat-option>
-          @for (g of grades(); track g) { <mat-option [value]="g">{{ g }}</mat-option> }
+          <mat-option [value]="null">{{ t('stock.all_grades') }}</mat-option>
+          @for (g of grades(); track g) { <mat-option [value]="g">{{ gradeLabel(g) }}</mat-option> }
         </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="filters__date">
-        <mat-label>As at</mat-label>
+        <mat-label>{{ t('stock.as_at') }}</mat-label>
         <input matInput [matDatepicker]="picker" [formControl]="asOf" [max]="today" />
         <mat-datepicker-toggle matIconSuffix [for]="picker" />
         <mat-datepicker #picker />
-        <mat-hint>Blank shows live stock</mat-hint>
+        <mat-hint>{{ t('stock.blank_live') }}</mat-hint>
       </mat-form-field>
 
-      <mat-checkbox [formControl]="onlyInStock">Only in stock</mat-checkbox>
+      <mat-checkbox [formControl]="onlyInStock">{{ t('stock.only_in_stock') }}</mat-checkbox>
     </div>
 
     @if (asOf.value) {
@@ -84,39 +85,39 @@ import { MovementsDialogComponent } from './movements-dialog';
     <div class="table-wrap">
       <table mat-table [dataSource]="rows()">
         <ng-container matColumnDef="productCode">
-          <th mat-header-cell *matHeaderCellDef>Code</th>
+          <th mat-header-cell *matHeaderCellDef>{{ t('stock.code') }}</th>
           <td mat-cell *matCellDef="let l"><code>{{ l.productCode }}</code></td>
         </ng-container>
 
         <ng-container matColumnDef="productName">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <th mat-header-cell *matHeaderCellDef>{{ t('stock.name') }}</th>
           <td mat-cell *matCellDef="let l">{{ l.productName }}</td>
         </ng-container>
 
         <ng-container matColumnDef="grade">
-          <th mat-header-cell *matHeaderCellDef>Grade</th>
-          <td mat-cell *matCellDef="let l">{{ l.grade }}</td>
+          <th mat-header-cell *matHeaderCellDef>{{ t('stock.grade') }}</th>
+          <td mat-cell *matCellDef="let l">{{ gradeLabel(l.grade) }}</td>
         </ng-container>
 
         <ng-container matColumnDef="quantity">
-          <th mat-header-cell *matHeaderCellDef class="num">Quantity</th>
+          <th mat-header-cell *matHeaderCellDef class="num">{{ t('stock.quantity') }}</th>
           <td mat-cell *matCellDef="let l" class="num qty">{{ qty(l.quantity) }}</td>
         </ng-container>
 
         <ng-container matColumnDef="unitRate">
-          <th mat-header-cell *matHeaderCellDef class="num">Unit rate</th>
+          <th mat-header-cell *matHeaderCellDef class="num">{{ t('stock.unit_rate') }}</th>
           <td mat-cell *matCellDef="let l" class="num">{{ rate(l) }}</td>
         </ng-container>
 
         <ng-container matColumnDef="stockValue">
-          <th mat-header-cell *matHeaderCellDef class="num">Value</th>
+          <th mat-header-cell *matHeaderCellDef class="num">{{ t('stock.value') }}</th>
           <td mat-cell *matCellDef="let l" class="num">{{ value(l) }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let l" class="actions">
-            <button matIconButton (click)="viewMovements(l)" matTooltip="Movement history">
+            <button matIconButton (click)="viewMovements(l)" [matTooltip]="t('stock.movements')">
               <mat-icon>receipt_long</mat-icon>
             </button>
           </td>
@@ -127,15 +128,15 @@ import { MovementsDialogComponent } from './movements-dialog';
       </table>
 
       @if (!loading() && rows().length === 0) {
-        <p class="empty">Nothing in stock matching these filters.</p>
+        <p class="empty">{{ t('stock.empty') }}</p>
       }
     </div>
 
     @if (result(); as r) {
       <div class="totals">
-        <span><strong>{{ qty(r.totalUnits) }}</strong> units</span>
-        <span><strong>{{ money(r.totalValue) }}</strong> total value</span>
-        <span class="totals__note">Unpriced stock contributes no value</span>
+        <span><strong>{{ qty(r.totalUnits) }}</strong> {{ t('common.units') }}</span>
+        <span><strong>{{ money(r.totalValue) }}</strong> {{ t('stock.total_value') }}</span>
+        <span class="totals__note">{{ t('stock.unpriced_note') }}</span>
       </div>
     }
   `,
@@ -160,6 +161,8 @@ import { MovementsDialogComponent } from './movements-dialog';
   `,
 })
 export class StockPageComponent {
+  protected readonly t = inject(I18nService).t;
+  protected readonly gradeLabel = inject(I18nService).grade;
   private readonly stock = inject(StockService);
   private readonly lookups = inject(LookupsService);
   private readonly dialog = inject(MatDialog);

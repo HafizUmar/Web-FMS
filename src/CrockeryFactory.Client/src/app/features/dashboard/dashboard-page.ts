@@ -11,6 +11,7 @@ import { LookupsService } from '../../core/lookups.service';
 import { ProblemDetails } from '../../core/problem-details';
 import { money, parseUtc, quantity } from '../../core/formatting';
 import { ErrorBannerComponent } from '../../shared/components/error-banner';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 /**
  * RP-07. Deliberately not a chart: every figure here is a single current magnitude or
@@ -29,17 +30,17 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
   template: `
     @if (denied()) {
       <div class="notice notice--warn" role="alert">
-        <mat-icon>lock</mat-icon> You do not have access to that page.
+        <mat-icon>lock</mat-icon> {{ t('dash.no_access') }}
       </div>
     }
 
     <header class="head">
       <div>
-        <h1>Welcome, {{ auth.fullName() }}</h1>
-        <p class="head__sub">{{ factoryName() }} · signed in as {{ auth.roles().join(', ') }}</p>
+        <h1>{{ t('dash.welcome', { name: auth.fullName() }) }}</h1>
+        <p class="head__sub">{{ factoryName() }} · {{ t('dash.signed_in_as', { roles: auth.roles().join(', ') }) }}</p>
       </div>
       <button matButton (click)="refresh()" [disabled]="loading()">
-        <mat-icon>refresh</mat-icon> Refresh
+        <mat-icon>refresh</mat-icon> {{ t('common.refresh') }}
       </button>
     </header>
 
@@ -52,7 +53,7 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
         <span class="hero__icon" aria-hidden="true">
           <mat-icon>receipt_long</mat-icon>
         </span>
-        <p class="hero__label">Outstanding across all customers</p>
+        <p class="hero__label">{{ t('dash.outstanding') }}</p>
         <p class="hero__value" [class.hero__value--credit]="d.totalOutstanding < 0">
           @if (d.totalOutstanding < 0) {
             {{ money(-d.totalOutstanding) }}
@@ -62,9 +63,9 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
         </p>
         <p class="hero__note">
           @if (d.totalOutstanding < 0) {
-            held in advance across {{ d.customersWithBalance }} account{{ d.customersWithBalance === 1 ? '' : 's' }}
+            {{ t('dash.held_advance', { count: d.customersWithBalance }) }}
           } @else {
-            owed by {{ d.customersWithBalance }} account{{ d.customersWithBalance === 1 ? '' : 's' }}
+            {{ t('dash.owed_by', { count: d.customersWithBalance }) }}
           }
         </p>
       </section>
@@ -72,43 +73,43 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
       <section class="tiles">
         <div class="tile tile--stock">
           <span class="tile__icon" aria-hidden="true"><mat-icon>inventory_2</mat-icon></span>
-          <p class="tile__label">Units in stock</p>
+          <p class="tile__label">{{ t('dash.units_in_stock') }}</p>
           <p class="tile__value">{{ qty(d.totalUnitsInStock) }}</p>
-          <p class="tile__note">{{ money(d.stockValue) }} at current rates</p>
+          <p class="tile__note">{{ t('dash.at_current_rates', { value: money(d.stockValue) }) }}</p>
         </div>
 
         <div class="tile tile--kiln">
           <span class="tile__icon" aria-hidden="true"><mat-icon>local_fire_department</mat-icon></span>
-          <p class="tile__label">Produced this month</p>
+          <p class="tile__label">{{ t('dash.produced') }}</p>
           <p class="tile__value">{{ qty(d.unitsProducedThisMonth) }}</p>
-          <p class="tile__note">good and seconds, excluding breakages</p>
+          <p class="tile__note">{{ t('dash.produced_note') }}</p>
         </div>
 
         <div class="tile" [class.tile--alert]="lossIsHigh()" [class.tile--ok]="!lossIsHigh()">
           <span class="tile__icon" aria-hidden="true"><mat-icon>trending_down</mat-icon></span>
-          <p class="tile__label">Loss this month</p>
+          <p class="tile__label">{{ t('dash.loss') }}</p>
           <p class="tile__value">{{ d.lossPercentageThisMonth }}%</p>
           <p class="tile__note tile__note--status" [class.is-warning]="lossIsHigh()">
             @if (lossIsHigh()) {
-              <mat-icon>report_problem</mat-icon> above the {{ lossThreshold() }}% threshold
+              <mat-icon>report_problem</mat-icon> {{ t('dash.above_threshold', { pct: lossThreshold() }) }}
             } @else {
-              <mat-icon>check_circle</mat-icon> within the {{ lossThreshold() }}% threshold
+              <mat-icon>check_circle</mat-icon> {{ t('dash.within_threshold', { pct: lossThreshold() }) }}
             }
           </p>
         </div>
 
         <div class="tile tile--sales">
           <span class="tile__icon" aria-hidden="true"><mat-icon>local_shipping</mat-icon></span>
-          <p class="tile__label">Sales this month</p>
+          <p class="tile__label">{{ t('dash.sales') }}</p>
           <p class="tile__value">{{ money(d.salesThisMonth) }}</p>
-          <p class="tile__note">active dispatches only</p>
+          <p class="tile__note">{{ t('dash.sales_note') }}</p>
         </div>
 
         <div class="tile tile--paid">
           <span class="tile__icon" aria-hidden="true"><mat-icon>payments</mat-icon></span>
-          <p class="tile__label">Payments this month</p>
+          <p class="tile__label">{{ t('dash.payments') }}</p>
           <p class="tile__value">{{ money(d.paymentsThisMonth) }}</p>
-          <p class="tile__note">received against accounts</p>
+          <p class="tile__note">{{ t('dash.payments_note') }}</p>
         </div>
       </section>
 
@@ -116,16 +117,16 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
         <!-- Top debtors -->
         <article class="panel">
           <header class="panel__head">
-            <h2>Largest balances</h2>
-            <a matButton routerLink="/customers">See all</a>
+            <h2>{{ t('dash.largest_balances') }}</h2>
+            <a matButton routerLink="/customers">{{ t('dash.see_all') }}</a>
           </header>
 
           @if (d.topDebtors.length === 0) {
-            <p class="panel__empty">Nobody owes anything.</p>
+            <p class="panel__empty">{{ t('dash.nobody_owes') }}</p>
           } @else {
             <table mat-table [dataSource]="d.topDebtors">
               <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Customer</th>
+                <th mat-header-cell *matHeaderCellDef>{{ t('dash.customer') }}</th>
                 <td mat-cell *matCellDef="let r">
                   <div>{{ r.name }}</div>
                   <small>{{ r.city ?? '' }}</small>
@@ -133,18 +134,20 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
               </ng-container>
 
               <ng-container matColumnDef="outstanding">
-                <th mat-header-cell *matHeaderCellDef class="num">Outstanding</th>
+                <th mat-header-cell *matHeaderCellDef class="num">{{ t('dash.outstanding_col') }}</th>
                 <td mat-cell *matCellDef="let r" class="num figure">
                   @if (r.outstanding < 0) {
-                    <span class="credit">{{ money(-r.outstanding) }} in advance</span>
+                    <span class="credit">{{ t('dash.in_advance', { amount: money(-r.outstanding) }) }}</span>
                   } @else { {{ money(r.outstanding) }} }
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="lastPaymentDate">
-                <th mat-header-cell *matHeaderCellDef class="num">Last paid</th>
+                <th mat-header-cell *matHeaderCellDef class="num">{{ t('dash.last_paid') }}</th>
                 <td mat-cell *matCellDef="let r" class="num">
-                  @if (r.lastPaymentDate) { {{ r.daysSinceLastPayment }}d ago } @else { Never }
+                  @if (r.lastPaymentDate) {
+                    {{ t('dash.days_ago', { days: r.daysSinceLastPayment }) }}
+                  } @else { {{ t('common.never') }} }
                 </td>
               </ng-container>
 
@@ -157,24 +160,24 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
         <!-- Low stock -->
         <article class="panel">
           <header class="panel__head">
-            <h2>Running low</h2>
-            <a matButton routerLink="/stock">See all</a>
+            <h2>{{ t('dash.running_low') }}</h2>
+            <a matButton routerLink="/stock">{{ t('dash.see_all') }}</a>
           </header>
 
           @if (d.lowStockProducts.length === 0) {
-            <p class="panel__empty">Nothing is running low.</p>
+            <p class="panel__empty">{{ t('dash.nothing_low') }}</p>
           } @else {
             <table mat-table [dataSource]="d.lowStockProducts">
               <ng-container matColumnDef="product">
-                <th mat-header-cell *matHeaderCellDef>Product</th>
+                <th mat-header-cell *matHeaderCellDef>{{ t('dash.product') }}</th>
                 <td mat-cell *matCellDef="let l">
                   <div>{{ l.productName }}</div>
-                  <small><code>{{ l.productCode }}</code> · {{ l.grade }}</small>
+                  <small><code>{{ l.productCode }}</code> · {{ gradeLabel(l.grade) }}</small>
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="quantity">
-                <th mat-header-cell *matHeaderCellDef class="num">On hand</th>
+                <th mat-header-cell *matHeaderCellDef class="num">{{ t('dash.on_hand') }}</th>
                 <td mat-cell *matCellDef="let l" class="num figure">{{ qty(l.quantity) }}</td>
               </ng-container>
 
@@ -185,10 +188,7 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
         </article>
       </section>
 
-      <p class="asof">
-        Figures as at {{ generatedAt() }}. The server caches this for a minute, so it is
-        not second-by-second live.
-      </p>
+      <p class="asof">{{ t('dash.as_at', { when: generatedAt() }) }}</p>
     }
   `,
   styles: `
@@ -341,6 +341,8 @@ import { ErrorBannerComponent } from '../../shared/components/error-banner';
   `,
 })
 export class DashboardPageComponent {
+  protected readonly t = inject(I18nService).t;
+  protected readonly gradeLabel = inject(I18nService).grade;
   readonly auth = inject(AuthService);
   private readonly reports = inject(ReportsService);
   private readonly lookups = inject(LookupsService);

@@ -26,6 +26,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog';
 import { CustomerFormComponent, CustomerFormData } from './customer-form';
 import { StatementDialogComponent } from './statement-dialog';
 import { PaymentFormComponent } from './payment-form';
+import { I18nService } from '../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-customers-page',
@@ -38,7 +39,7 @@ import { PaymentFormComponent } from './payment-form';
   template: `
     <header class="page__header">
       <div>
-        <h1>Customers</h1>
+        <h1>{{ t('cust.title') }}</h1>
         <p class="page__sub">Accounts, and what each of them owes.</p>
       </div>
 
@@ -242,6 +243,7 @@ import { PaymentFormComponent } from './payment-form';
   `,
 })
 export class CustomersPageComponent {
+  protected readonly t = inject(I18nService).t;
   private readonly sales = inject(SalesService);
   private readonly auth = inject(AuthService);
   private readonly dialog = inject(MatDialog);
