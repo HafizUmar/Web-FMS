@@ -176,13 +176,23 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Migrations are applied by the Setup tool, never here. With one instance startup
-// migration would work; a failed one would then leave the application in a crash loop
-// at a factory nobody can reach, during working hours (spec section 2.2).
+// Migrations are applied by the Setup tool, not here - spec section 2.2, because a failed
+// startup migration leaves the application unable to start at a factory nobody can reach.
 //
-// What does happen here is a read-only check that says plainly whether the database is
-// reachable, migrated and usable. Without it the first sign of a missing database is a
-// 500 on the login screen, which names neither the server nor the database.
+// The cloud deployment switches this on deliberately (Database:MigrateOnStartup), where
+// the trade is different: there is no Setup tool step in a push-button pipeline. It is
+// written so that a failed migration still lets the host start, so the machine can be
+// reached and the state read, rather than restart-looping.
+await DatabaseMigrator.ApplyAsync(app);
+
+// A migrated database still has nobody who can sign in. On a cloud deployment there is
+// no Setup tool and no seeder to fill that gap, so the first administrator is created
+// here - once, only when there is no active user, and only from configuration.
+await AdminBootstrapper.RunAsync(app);
+
+// Then, either way, a read-only check that says plainly whether the database is reachable,
+// migrated and usable. Without it the first sign of a missing database is a 500 on the
+// login screen, which names neither the server nor the database.
 await DatabaseStartupCheck.ReportAsync(app);
 
 app.UseExceptionHandler();

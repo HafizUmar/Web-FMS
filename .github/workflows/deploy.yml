@@ -1,0 +1,161 @@
+name: Build, test and deploy
+
+# Runs on every push to the working branch, and on demand. A deployment is therefore
+# always something that was pushed and tested, not something built on a laptop.
+on:
+  push:
+    branches:
+      - main
+      - claude/funny-noether-g1mh7r
+  workflow_dispatch:
+
+# Required by azure/login for OIDC: GitHub mints a short-lived token for this run rather
+# than the repository holding a standing credential to the subscription.
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  # A second push while one deploy is in flight cancels the first. Two deployments racing
+  # onto one App Service is how a half-written release reaches production.
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  NODE_VERSION: '22.x'
+  PUBLISH_DIR: ${{ github.workspace }}/publish
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    # The integration tests exercise check constraints, filtered unique indexes and
+    # rowversion concurrency, none of which a fake provider can honour. A real SQL Server
+    # for the length of the job is the only way they mean anything.
+    services:
+      sql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: 'Y'
+          MSSQL_SA_PASSWORD: ${{ secrets.CI_SQL_PASSWORD || 'Ci!Pass-2026-Crockery' }}
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: src/CrockeryFactory.Client/package-lock.json
+
+      # The Angular build must run before dotnet publish: it writes into the web
+      # project's wwwroot, and publish only packages what is on disk when it runs.
+      - name: Install client dependencies
+        working-directory: src/CrockeryFactory.Client
+        run: npm ci
+
+      - name: Build the client
+        working-directory: src/CrockeryFactory.Client
+        run: npm run build
+
+      - name: Fail if the client produced nothing
+        run: |
+          if [ ! -f src/CrockeryFactory.Web/wwwroot/index.html ]; then
+            echo "The Angular build did not write into wwwroot."
+            echo "Deploying now would publish a working API serving no interface at all,"
+            echo "which looks like a broken deployment rather than a missing build step."
+            exit 1
+          fi
+
+      - name: Restore
+        run: dotnet restore CrockeryFactory.sln
+
+      - name: Build
+        run: dotnet build CrockeryFactory.sln --configuration Release --no-restore
+
+      - name: Test
+        env:
+          CROCKERY_TEST_CONNECTION: >-
+            Server=localhost,1433;Database=CrockeryFactoryCi;User Id=sa;Password=${{ secrets.CI_SQL_PASSWORD || 'Ci!Pass-2026-Crockery' }};TrustServerCertificate=True
+        run: dotnet test CrockeryFactory.sln --configuration Release --no-build --verbosity normal
+
+      - name: Publish
+        run: >-
+          dotnet publish src/CrockeryFactory.Web/CrockeryFactory.Web.csproj
+          --configuration Release --no-build --output "${{ env.PUBLISH_DIR }}"
+
+      - name: Upload the build
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: ${{ env.PUBLISH_DIR }}
+          retention-days: 7
+
+  deploy:
+    name: Deploy to Azure
+    runs-on: ubuntu-latest
+    needs: build
+    # A deployment environment gives somewhere to require an approval later without
+    # touching this file.
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.webapp-url }}
+
+    steps:
+      - name: Download the build
+        uses: actions/download-artifact@v4
+        with:
+          name: app
+          path: ${{ env.PUBLISH_DIR }}
+
+      - name: Sign in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy
+        id: deploy
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          package: ${{ env.PUBLISH_DIR }}
+
+      # The application applies its own migrations as it starts, so the first request
+      # after a deploy is also the moment the schema changes. Asking it for its health is
+      # the cheapest way to find out whether that worked, and it wakes the free tier's
+      # sleeping app at the same time.
+      - name: Wait for the site to answer
+        run: |
+          url="${{ steps.deploy.outputs.webapp-url }}/api/v1/health"
+          echo "Polling $url"
+
+          for attempt in $(seq 1 30); do
+            body=$(curl -fsS --max-time 20 "$url" 2>/dev/null) && {
+              echo "$body"
+              echo "$body" | grep -q '"status":"Healthy"' && exit 0
+              echo "Answered, but not healthy yet (attempt $attempt)."
+            } || echo "No answer yet (attempt $attempt)."
+            sleep 10
+          done
+
+          echo "::error::The site did not report healthy within five minutes."
+          echo "On the free tier a cold start plus a database resuming can be slow, but not this slow."
+          echo "Check the application log stream in the Azure portal."
+          exit 1
