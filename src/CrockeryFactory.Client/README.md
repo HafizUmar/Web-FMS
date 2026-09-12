@@ -37,6 +37,23 @@ non-`/swagger` GET without a file extension to `index.html`, so client-side rout
 dependency resolver crashes on this tree otherwise, and removing it will break a clean
 install.
 
+## After pulling
+
+Run `npm install` again whenever a pull brings new commits, before `npm run build`:
+
+```bash
+git pull
+cd src/CrockeryFactory.Client
+npm install
+npm run build
+```
+
+`package.json` and `package-lock.json` are in the repository but `node_modules` is not, so
+a commit that adds a dependency arrives as a reference to a package that is not on disk
+yet. The build then fails with `Could not resolve "<package>"`, naming whatever was added —
+the Urdu font, for instance. It means the dependency list moved on and the install has not
+caught up; it is never a broken commit.
+
 ## Working on the front end
 
 ```bash
