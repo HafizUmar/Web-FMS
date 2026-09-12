@@ -18,6 +18,44 @@ the history shows what happened rather than concealing it.
 product name and unit rate as at the moment it was raised. Renaming a product or changing
 a price never rewrites a bill that has already gone out of the gate.
 
+## The database connection
+
+`ConnectionStrings:FactoryDatabase` in `src/CrockeryFactory.Web/appsettings.json` is the
+one place the application, `dotnet ef` and the development seeder all read, so all three
+always agree about which database they are talking to.
+
+It ships as `Server=.` — the **default** SQL Server instance on this machine. If your SQL
+Server is a *named* instance, that has to say so:
+
+| Your setup | `Server=` |
+|---|---|
+| Default instance (SSMS shows `MACHINENAME`, no backslash) | `.` or `localhost` |
+| SQL Server Express (SSMS shows `MACHINENAME\SQLEXPRESS`) | `.\SQLEXPRESS` |
+| LocalDB | `(localdb)\MSSQLLocalDB` |
+
+To see which you have, in PowerShell:
+
+```powershell
+Get-Service | Where-Object { $_.Name -like 'MSSQL*' } | Select-Object Name, Status
+```
+
+`MSSQLSERVER` is the default instance; `MSSQL$SQLEXPRESS` is a named one.
+
+**Getting this wrong produces `error 26 - Error Locating Server/Instance Specified`.** That
+message means SQL Server could not find an instance under the name it was given — it is
+not a permissions or firewall problem, and no amount of restarting the service fixes it.
+The name is wrong.
+
+To point at a different database without editing the committed file, set the override for
+the session instead:
+
+```powershell
+$env:CROCKERY_DESIGNTIME_CONNECTION = "Server=YOURSERVER;Database=CrockeryFactory;Trusted_Connection=True;TrustServerCertificate=True"
+```
+
+`dotnet ef` and the seeder both prefer that variable over the file, and each prints which
+connection it actually used before it does anything.
+
 ## Layout
 
 | Project | Holds |
