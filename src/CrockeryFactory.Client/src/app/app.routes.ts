@@ -65,6 +65,24 @@ export const routes: Routes = [
           import('./features/reports/reports-page').then((m) => m.ReportsPageComponent),
       },
       {
+        path: 'employees',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/staff/employees-page').then((m) => m.EmployeesPageComponent),
+      },
+      {
+        path: 'attendance',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/staff/attendance-page').then((m) => m.AttendancePageComponent),
+      },
+      {
+        path: 'payroll',
+        canActivate: [requiresPermission('CanViewReports')],
+        loadComponent: () =>
+          import('./features/staff/payroll-page').then((m) => m.PayrollPageComponent),
+      },
+      {
         path: 'admin/users',
         canActivate: [requiresPermission('CanManageUsers')],
         loadComponent: () =>

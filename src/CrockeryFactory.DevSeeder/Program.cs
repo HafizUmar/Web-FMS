@@ -108,6 +108,7 @@ Console.WriteLine($"Seeding {options.Months} months of trading, {from:yyyy-MM-dd
 
 var started = DateTime.UtcNow;
 var summary = await new DemoDataSeeder(db).SeedAsync(from, to);
+var staff = await new StaffSeeder(db).SeedAsync(from, to);
 var elapsed = DateTime.UtcNow - started;
 
 Console.WriteLine($"""
@@ -119,6 +120,8 @@ Console.WriteLine($"""
       Production entries {summary.ProductionEntries,8:N0}
       Dispatches         {summary.Dispatches,8:N0}
       Payments           {summary.Payments,8:N0}
+      Employees          {staff.Employees,8:N0}
+      Attendance days    {staff.AttendanceDays,8:N0}
 
     Stock balances were written from the running totals the generator maintained, so
     they agree with the ledger by construction. Verify with POST /api/v1/admin/rebuild-stock-balances.

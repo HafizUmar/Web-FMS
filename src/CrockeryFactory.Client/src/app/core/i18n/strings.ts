@@ -310,6 +310,20 @@ export const STRINGS = {
   'emp.empty': { en: 'No employees yet.', ur: 'ابھی کوئی ملازم نہیں۔' },
   'emp.show_left': { en: 'Show those who left', ur: 'چھوڑ جانے والے دکھائیں' },
   'emp.rate_history': { en: 'Wage history', ur: 'اجرت کی تاریخ' },
+  'emp.code_locked': {
+    en: 'Fixed - it is printed on every payslip already issued',
+    ur: 'مقرر - یہ پہلے سے جاری ہر پرچی پر درج ہے',
+  },
+  'emp.rate_from_joining': {
+    en: 'Applies from the joining date onward',
+    ur: 'تاریخ تقرری سے لاگو ہوگی',
+  },
+  'emp.rate_positive': { en: 'Must be more than zero', ur: 'صفر سے زیادہ ہونا چاہیے' },
+  'emp.left_warning': {
+    en: 'They will no longer appear on the attendance sheet. Everything already recorded stays exactly as it is.',
+    ur: 'وہ حاضری کی فہرست میں نہیں آئیں گے۔ پہلے کا تمام ریکارڈ جوں کا توں رہے گا۔',
+  },
+  'emp.left_done': { en: 'Marked as left.', ur: 'چھوڑ چکا درج کر دیا گیا۔' },
   'emp.new_rate': { en: 'Change daily wage', ur: 'روزانہ اجرت تبدیل کریں' },
   'emp.effective_from': { en: 'Effective from', ur: 'نافذ العمل از' },
   'emp.rate_note': {

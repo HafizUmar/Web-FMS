@@ -535,3 +535,115 @@ export interface RebuildResult {
   corrections: string[];
   completedAt: IsoTimestamp;
 }
+
+// ---------------------------------------------------------------------------
+// Staff: employees, attendance, weekly payroll
+// ---------------------------------------------------------------------------
+
+export type AttendanceStatus = 'Present' | 'HalfDay' | 'Absent';
+
+export interface Employee {
+  id: string;
+  code: string;
+  name: string;
+  fatherName?: string;
+  cnic?: string;
+  phone?: string;
+  designation?: string;
+  joinedOn: IsoDate;
+  isActive: boolean;
+  leftOn?: IsoDate;
+  /** Absent when no wage rate applies yet - the server omits nulls. */
+  currentDailyRate?: number;
+  notes?: string;
+}
+
+export interface CreateEmployeeRequest {
+  code: string;
+  name: string;
+  fatherName?: string | null;
+  cnic?: string | null;
+  phone?: string | null;
+  designation?: string | null;
+  joinedOn: IsoDate;
+  dailyRate: number;
+  notes?: string | null;
+}
+
+export interface UpdateEmployeeRequest {
+  name: string;
+  fatherName?: string | null;
+  cnic?: string | null;
+  phone?: string | null;
+  designation?: string | null;
+  notes?: string | null;
+}
+
+export interface WageRate {
+  id: string;
+  dailyRate: number;
+  effectiveFrom: IsoDate;
+  createdAt: IsoTimestamp;
+}
+
+export interface AttendanceLine {
+  employeeId: string;
+  code: string;
+  name: string;
+  designation?: string;
+  /** Absent means not yet marked, which is different from marked Absent. */
+  status?: AttendanceStatus;
+  overtimeHours: number;
+  notes?: string;
+  dailyRate?: number;
+}
+
+export interface AttendanceSheet {
+  date: IsoDate;
+  lines: AttendanceLine[];
+  presentCount: number;
+  halfDayCount: number;
+  absentCount: number;
+  unmarkedCount: number;
+}
+
+export interface PayrollLine {
+  employeeId: string;
+  code: string;
+  name: string;
+  fullDays: number;
+  halfDays: number;
+  absentDays: number;
+  overtimeHours: number;
+  dailyRate: number;
+  wageAmount: number;
+  overtimeAmount: number;
+  netAmount: number;
+}
+
+export interface PayrollPreview {
+  periodStart: IsoDate;
+  periodEnd: IsoDate;
+  lines: PayrollLine[];
+  totalAmount: number;
+  employeeCount: number;
+  standardHoursPerDay: number;
+  overtimeMultiplier: number;
+  /** Set when a live run already covers this week, so the screen can refuse early. */
+  existingRunNumber?: string;
+}
+
+export interface PayrollRun {
+  id: string;
+  runNumber: string;
+  periodStart: IsoDate;
+  periodEnd: IsoDate;
+  totalAmount: number;
+  employeeCount: number;
+  standardHoursPerDay: number;
+  overtimeMultiplier: number;
+  status: DocumentStatus;
+  cancellationReason?: string;
+  createdAt: IsoTimestamp;
+  lines: PayrollLine[];
+}
